@@ -6,7 +6,7 @@ import DashboardHeader from '@/components/Dashboard/DashboardHeader';
 import SentimentAnalysis from '@/components/Dashboard/SentimentAnalysis';
 import LocationTimeline from '@/components/Dashboard/LocationTimeline';
 import { Button } from "@/components/ui/button";
-import { MapPin, RefreshCw, PlusCircle, Heart } from "lucide-react";
+import { MapPin, RefreshCw, PlusCircle, Users } from "lucide-react";
 import { toast } from "sonner";
 
 const Dashboard = () => {
@@ -17,7 +17,8 @@ const Dashboard = () => {
     isSentimentLoading,
     activePeriod,
     setActivePeriod,
-    refreshData
+    refreshData,
+    currentFriend
   } = useDashboard();
 
   const handleRefresh = async () => {
@@ -25,8 +26,8 @@ const Dashboard = () => {
     toast.success("Data refreshed successfully");
   };
 
-  const handleTimeRangeChange = (range: string) => {
-    setActivePeriod(range);
+  const handleFriendChange = (friend: string) => {
+    setActivePeriod(friend);
   };
 
   const handleAddLocation = () => {
@@ -38,15 +39,15 @@ const Dashboard = () => {
   return (
     <>
       <DashboardHeader
-        title="Emotion Map"
+        title="City-Mood"
         subtitle="Track your locations and feelings throughout the day"
-        onTimeRangeChange={handleTimeRangeChange}
+        onTimeRangeChange={handleFriendChange}
       />
 
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-2">
-          <Heart className="h-5 w-5 text-rose-500" />
-          <h2 className="text-xl font-medium">Your Emotional Journey</h2>
+          <Users className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-medium">{currentFriend?.name}'s Journey</h2>
         </div>
         <div className="flex gap-2">
           <Button
@@ -81,6 +82,7 @@ const Dashboard = () => {
         <SentimentAnalysis 
           data={sentimentData} 
           isLoading={isSentimentLoading} 
+          friend={currentFriend}
         />
       </div>
     </>

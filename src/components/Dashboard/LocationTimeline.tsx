@@ -5,14 +5,15 @@ import Map from '@/components/UI/Map';
 import Timeline, { TimelineItem } from '@/components/UI/Timeline';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { MapPin, Building, Home, ShoppingBag, Coffee, Car, Calendar, Smile, Frown, Meh, Heart, Activity } from "lucide-react";
+import { MapPin, Building, Home, ShoppingBag, Coffee, Car, Calendar, 
+         Smile, Frown, Angry, BookOpen, Stethoscope, HeartPulse, Park } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { toast } from "sonner";
 
 export interface LocationData {
   id: string;
   name: string;
-  type: 'home' | 'work' | 'shopping' | 'food' | 'transit' | 'park' | 'other';
+  type: 'home' | 'work' | 'shopping' | 'food' | 'transit' | 'park' | 'other' | 'school' | 'hospital';
   address?: string;
   time: string;
   duration?: string;
@@ -22,7 +23,7 @@ export interface LocationData {
   };
   sentimentScore?: number;
   emotion?: {
-    primary: 'joy' | 'sadness' | 'anger' | 'surprise' | 'fear' | 'neutral';
+    primary: 'happy' | 'sad' | 'angry' | 'surprised' | 'scared' | 'neutral';
     intensity: number; // 0-1
     note?: string;
   };
@@ -60,12 +61,12 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
     // First prioritize emotion if available
     if (location.emotion) {
       switch (location.emotion.primary) {
-        case 'joy': return <Smile className="h-3.5 w-3.5" />;
-        case 'sadness': return <Frown className="h-3.5 w-3.5" />;
-        case 'anger': return <Frown className="h-3.5 w-3.5" />;
-        case 'surprise': return <Meh className="h-3.5 w-3.5" />;
-        case 'fear': return <Meh className="h-3.5 w-3.5" />;
-        case 'neutral': return <Meh className="h-3.5 w-3.5" />;
+        case 'happy': return <Smile className="h-5 w-5" />;
+        case 'sad': return <Frown className="h-5 w-5" />;
+        case 'angry': return <Angry className="h-5 w-5" />;
+        case 'surprised': return <HeartPulse className="h-5 w-5" />;
+        case 'scared': return <HeartPulse className="h-5 w-5" />;
+        case 'neutral': return <MapPin className="h-5 w-5" />;
       }
     }
     
@@ -75,13 +76,15 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
   
   function getLocationTypeIcon(type: LocationData['type']) {
     switch (type) {
-      case 'home': return <Home className="h-3.5 w-3.5" />;
-      case 'work': return <Building className="h-3.5 w-3.5" />;
-      case 'shopping': return <ShoppingBag className="h-3.5 w-3.5" />;
-      case 'food': return <Coffee className="h-3.5 w-3.5" />;
-      case 'transit': return <Car className="h-3.5 w-3.5" />;
-      case 'park': return <Activity className="h-3.5 w-3.5" />;
-      default: return <MapPin className="h-3.5 w-3.5" />;
+      case 'home': return <Home className="h-5 w-5" />;
+      case 'work': return <Building className="h-5 w-5" />;
+      case 'shopping': return <ShoppingBag className="h-5 w-5" />;
+      case 'food': return <Coffee className="h-5 w-5" />;
+      case 'transit': return <Car className="h-5 w-5" />;
+      case 'park': return <Park className="h-5 w-5" />;
+      case 'school': return <BookOpen className="h-5 w-5" />;
+      case 'hospital': return <Stethoscope className="h-5 w-5" />;
+      default: return <MapPin className="h-5 w-5" />;
     }
   }
   
@@ -89,11 +92,11 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
     // If the location has emotion data, use that for coloring
     if (location.emotion) {
       switch (location.emotion.primary) {
-        case 'joy': return 'hsl(var(--sentiment-positive))';
-        case 'sadness': return 'hsl(200, 70%, 60%)';
-        case 'anger': return 'hsl(var(--sentiment-negative))';
-        case 'surprise': return 'hsl(275, 80%, 60%)';
-        case 'fear': return 'hsl(310, 70%, 50%)';
+        case 'happy': return 'hsl(var(--sentiment-positive))';
+        case 'sad': return 'hsl(200, 70%, 60%)';
+        case 'angry': return 'hsl(var(--sentiment-negative))';
+        case 'surprised': return 'hsl(275, 80%, 60%)';
+        case 'scared': return 'hsl(310, 70%, 50%)';
         case 'neutral': return 'hsl(var(--sentiment-neutral))';
       }
     }
@@ -106,6 +109,8 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
       case 'food': return 'hsl(330, 80%, 60%)';
       case 'park': return 'hsl(145, 80%, 50%)';
       case 'transit': return 'hsl(210, 70%, 60%)';
+      case 'school': return 'hsl(40, 100%, 50%)';
+      case 'hospital': return 'hsl(340, 82%, 52%)';
       default: return 'hsl(var(--muted-foreground))';
     }
   }
@@ -131,11 +136,11 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
     
     if (location.emotion) {
       const emotions = {
-        joy: 'Happy 😊',
-        sadness: 'Sad 😢',
-        anger: 'Angry 😠',
-        surprise: 'Surprised 😮',
-        fear: 'Anxious 😨',
+        happy: 'Happy 😊',
+        sad: 'Sad 😢',
+        angry: 'Angry 😠',
+        surprised: 'Surprised 😮',
+        scared: 'Anxious 😨',
         neutral: 'Neutral 😐'
       };
       
@@ -168,21 +173,27 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
       animation="fade"
       delay={200}
     >
-      <Tabs defaultValue="map">
+      <Tabs defaultValue="timeline">
         <div className="flex items-center justify-between mb-4">
           <TabsList>
-            <TabsTrigger value="map" className="flex items-center gap-1.5">
-              <MapPin className="h-4 w-4" />
-              <span>Emotional Map</span>
-            </TabsTrigger>
             <TabsTrigger value="timeline" className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
               <span>Timeline</span>
+            </TabsTrigger>
+            <TabsTrigger value="map" className="flex items-center gap-1.5">
+              <MapPin className="h-4 w-4" />
+              <span>Emotional Map</span>
             </TabsTrigger>
           </TabsList>
           
           <Button variant="outline" size="sm" onClick={handleRecordEmotion}>Record emotion</Button>
         </div>
+        
+        <TabsContent value="timeline" className="mt-0">
+          <div className="h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+            <Timeline items={timelineItems} />
+          </div>
+        </TabsContent>
         
         <TabsContent value="map" className="mt-0">
           <div className="space-y-4">
@@ -191,12 +202,6 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
               height={300}
               isLoading={isLoading}
             />
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="timeline" className="mt-0">
-          <div className="h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-            <Timeline items={timelineItems} />
           </div>
         </TabsContent>
       </Tabs>

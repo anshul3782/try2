@@ -10,13 +10,23 @@ import {
   fetchActivityData, 
   fetchSentimentData,
   fetchLifeReport,
-  fetchPrivacySettings
+  fetchPrivacySettings,
+  fetchFriendsData
 } from '@/utils/dataFetchers';
 import { 
   processLifeData, 
   generateDailySummary, 
   generateCorrelations 
 } from '@/utils/dataProcessing';
+
+export interface Friend {
+  id: string;
+  name: string;
+  location: string;
+  currentEmotion: 'happy' | 'sad' | 'angry' | 'surprised' | 'scared' | 'neutral';
+  emotionIntensity: number;
+  description: string;
+}
 
 interface DashboardContextType {
   // Data states
@@ -27,6 +37,8 @@ interface DashboardContextType {
   lifeReport: ReportData | null;
   privacySettings: any[];
   processedData: any | null;
+  friends: Friend[];
+  currentFriend: Friend | null;
   
   // Loading states
   isSocialLoading: boolean;
@@ -56,6 +68,8 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [lifeReport, setLifeReport] = useState<ReportData | null>(null);
   const [privacySettings, setPrivacySettings] = useState<any[]>([]);
   const [processedData, setProcessedData] = useState<any | null>(null);
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [currentFriend, setCurrentFriend] = useState<Friend | null>(null);
   
   // Loading states
   const [isSocialLoading, setIsSocialLoading] = useState(true);
@@ -65,13 +79,33 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isReportLoading, setIsReportLoading] = useState(true);
   const [isPrivacyLoading, setIsPrivacyLoading] = useState(true);
   
-  // Time period state
-  const [activePeriod, setActivePeriod] = useState('today');
+  // Time period state (now used for friend selection)
+  const [activePeriod, setActivePeriod] = useState('arnav');
   
   // Fetch all data on initial load
   useEffect(() => {
     refreshData();
   }, []);
+
+  // Update current friend when activePeriod changes
+  useEffect(() => {
+    if (friends.length > 0) {
+      const friend = friends.find(f => f.id === activePeriod) || friends[0];
+      setCurrentFriend(friend);
+      
+      // Load location data specific to the selected friend
+      fetchLocationData(activePeriod).then(data => {
+        setLocations(data);
+        setIsLocationLoading(false);
+      });
+      
+      // Load sentiment data specific to the selected friend
+      fetchSentimentData(activePeriod).then(data => {
+        setSentimentData(data);
+        setIsSentimentLoading(false);
+      });
+    }
+  }, [activePeriod, friends]);
   
   // Process the data when all sources are loaded
   useEffect(() => {
@@ -107,14 +141,16 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         activityData,
         sentimentData,
         reportData,
-        privacyData
+        privacyData,
+        friendsData
       ] = await Promise.all([
         fetchSocialData(),
-        fetchLocationData(),
+        fetchLocationData(activePeriod),
         fetchActivityData(),
-        fetchSentimentData(),
+        fetchSentimentData(activePeriod),
         fetchLifeReport(),
-        fetchPrivacySettings()
+        fetchPrivacySettings(),
+        fetchFriendsData()
       ]);
       
       // Update state with fetched data
@@ -124,6 +160,11 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setSentimentData(sentimentData);
       setLifeReport(reportData);
       setPrivacySettings(privacyData);
+      setFriends(friendsData);
+      
+      // Set current friend
+      const friend = friendsData.find(f => f.id === activePeriod) || friendsData[0];
+      setCurrentFriend(friend);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -163,6 +204,8 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     lifeReport,
     privacySettings,
     processedData,
+    friends,
+    currentFriend,
     
     // Loading states
     isSocialLoading,
