@@ -1,6 +1,4 @@
-import { SocialPost } from '@/components/Dashboard/SocialFeed';
-import { LocationData } from '@/components/Dashboard/LocationTimeline';
-import { ActivityData } from '@/types/dashboard';
+import { SocialPost, LocationData, ActivityData } from '@/types/dashboard';
 import { Friend } from '@/context/DashboardContext';
 
 export const fetchSocialData = async (): Promise<SocialPost[]> => {
@@ -303,11 +301,11 @@ export const fetchFriendsData = async (): Promise<Friend[]> => {
   // Simulate API call with a delay
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  // Mock data
+  // Mock data - updated to include only the requested friends without surnames
   return [
     {
       id: 'lena',
-      name: 'Lena Kim',
+      name: 'Lena',
       location: 'Brooklyn, NY',
       currentEmotion: 'happy',
       emotionIntensity: 0.8,
@@ -315,17 +313,8 @@ export const fetchFriendsData = async (): Promise<Friend[]> => {
       avatar: '/placeholder.svg'
     },
     {
-      id: 'marcus',
-      name: 'Marcus Johnson',
-      location: 'Manhattan, NY',
-      currentEmotion: 'neutral',
-      emotionIntensity: 0.5,
-      description: 'Working on a big project',
-      avatar: '/placeholder.svg'
-    },
-    {
       id: 'sheetal',
-      name: 'Sheetal Patel',
+      name: 'Sheetal',
       location: 'Queens, NY',
       currentEmotion: 'happy',
       emotionIntensity: 0.7,
@@ -333,21 +322,21 @@ export const fetchFriendsData = async (): Promise<Friend[]> => {
       avatar: '/placeholder.svg'
     },
     {
-      id: 'jasmine',
-      name: 'Jasmine Taylor',
-      location: 'Bronx, NY',
-      currentEmotion: 'surprised',
-      emotionIntensity: 0.6,
-      description: 'Got unexpected news today',
-      avatar: '/placeholder.svg'
-    },
-    {
       id: 'arnav',
-      name: 'Arnav Gupta',
+      name: 'Arnav',
       location: 'Staten Island, NY',
       currentEmotion: 'happy',
       emotionIntensity: 0.9,
       description: 'Just got promoted!',
+      avatar: '/placeholder.svg'
+    },
+    {
+      id: 'shahraan',
+      name: 'Shahraan',
+      location: 'Manhattan, NY',
+      currentEmotion: 'neutral',
+      emotionIntensity: 0.5,
+      description: 'Working on a new project',
       avatar: '/placeholder.svg'
     }
   ];
