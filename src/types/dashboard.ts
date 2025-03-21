@@ -45,7 +45,7 @@ export interface SocialPost {
     handle: string;
     avatar: string;
   };
-  platform: string;
+  platform: "twitter" | "instagram" | "email" | "facebook" | "linkedin";
 }
 
 // Define LocationData interface

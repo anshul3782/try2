@@ -172,19 +172,24 @@ export const fetchLocationData = async (friendId: string): Promise<LocationData[
       ],
       shahraan: [
         { 
-          name: 'Design Studio', 
-          type: 'work' as const,
-          emotion: { primary: 'happy' as const, intensity: 0.7, note: 'Working on a new design concept' }
+          name: 'Scarsdale Elementary School', 
+          type: 'school' as const,
+          emotion: { primary: 'happy' as const, intensity: 0.8, note: 'I got a gold star in art class!' }
         },
         { 
-          name: 'Client Meeting', 
-          type: 'work' as const,
-          emotion: { primary: 'neutral' as const, intensity: 0.6, note: 'Presenting design concepts' }
+          name: 'Recess', 
+          type: 'school' as const,
+          emotion: { primary: 'happy' as const, intensity: 0.9, note: 'Playing tag with my friends' }
         },
         { 
-          name: 'Art Gallery', 
-          type: 'other' as const,
-          emotion: { primary: 'happy' as const, intensity: 0.8, note: 'Found inspiration for my next project' }
+          name: 'Math Class', 
+          type: 'school' as const,
+          emotion: { primary: 'neutral' as const, intensity: 0.6, note: 'Learning multiplication tables' }
+        },
+        { 
+          name: 'Playground', 
+          type: 'park' as const,
+          emotion: { primary: 'happy' as const, intensity: 0.9, note: 'Going down the big slide!' }
         }
       ]
     };
@@ -385,6 +390,50 @@ export const fetchLocationData = async (friendId: string): Promise<LocationData[
           note: 'Evening stock trading session'
         }
       }
+    ],
+    shahraan: [
+      {
+        id: 'loc1',
+        name: 'Home',
+        type: 'home',
+        address: '23 Maple Ave, Scarsdale',
+        time: '07:00 AM',
+        duration: '1 hour',
+        coordinates: { lat: 41.0051, lng: -73.7868 },
+        emotion: {
+          primary: 'happy',
+          intensity: 0.8,
+          note: 'Mom made my favorite breakfast!'
+        }
+      },
+      {
+        id: 'loc2',
+        name: 'Scarsdale Elementary School',
+        type: 'school',
+        address: '54 School Lane, Scarsdale',
+        time: '08:30 AM',
+        duration: '7 hours',
+        coordinates: { lat: 41.0096, lng: -73.7932 },
+        emotion: {
+          primary: 'happy',
+          intensity: 0.7,
+          note: 'I love school days!'
+        }
+      },
+      {
+        id: 'loc3',
+        name: 'After School Program',
+        type: 'school',
+        address: '54 School Lane, Scarsdale',
+        time: '03:30 PM',
+        duration: '2 hours',
+        coordinates: { lat: 41.0096, lng: -73.7932 },
+        emotion: {
+          primary: 'happy',
+          intensity: 0.9,
+          note: 'We built a cool robot in science club!'
+        }
+      }
     ]
   };
   
@@ -563,10 +612,10 @@ export const fetchFriendsData = async (): Promise<Friend[]> => {
     {
       id: 'shahraan',
       name: 'Shahraan',
-      location: 'Manhattan, NY',
-      currentEmotion: 'neutral',
-      emotionIntensity: 0.5,
-      description: 'Working on a new project',
+      location: 'Scarsdale, NY',
+      currentEmotion: 'happy',
+      emotionIntensity: 0.9,
+      description: 'I got an A on my spelling test!',
       avatar: '/placeholder.svg'
     }
   ];
