@@ -1,7 +1,4 @@
-
-import { LocationData } from '@/components/Dashboard/LocationTimeline';
-import { ActivityData } from '@/components/Dashboard/ActivityMetrics';
-import { SocialPost } from '@/components/Dashboard/SocialFeed';
+import { LocationData, ActivityData, SocialPost } from '@/types/dashboard';
 import { analyzeSentiment, generateSentimentSummary, generateSentimentNarrative } from './sentimentAnalysis';
 
 export interface ProcessedLifeData {

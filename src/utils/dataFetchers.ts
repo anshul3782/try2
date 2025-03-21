@@ -490,30 +490,42 @@ export const fetchActivityData = async (): Promise<ActivityData[]> => {
   // Simulate API call with a delay
   await new Promise(resolve => setTimeout(resolve, 600));
   
-  // Mock data
-  return [
-    {
-      id: '1',
-      type: 'workout',
-      duration: '30 minutes',
-      caloriesBurned: 300,
-      timestamp: new Date().toISOString()
-    },
-    {
-      id: '2',
-      type: 'meeting',
-      duration: '1 hour',
-      caloriesBurned: 50,
-      timestamp: new Date(Date.now() - 3600000).toISOString()
-    },
-    {
-      id: '3',
-      type: 'walk',
-      duration: '45 minutes',
-      caloriesBurned: 200,
-      timestamp: new Date(Date.now() - 7200000).toISOString()
-    }
-  ];
+  // Get current date and previous days for the mock data
+  const today = new Date();
+  const formatDate = (date: Date): string => {
+    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
+  };
+  
+  // Create mock data for the last 7 days
+  const mockData: ActivityData[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(today.getDate() - i);
+    
+    // Generate random activity data with increasing trend
+    const baseSteps = 7000 + Math.floor(Math.random() * 4000);
+    const baseActiveMinutes = 20 + Math.floor(Math.random() * 20);
+    const baseCalories = 1800 + Math.floor(Math.random() * 800);
+    const baseSleep = 6 + (Math.random() * 2);
+    
+    // Add some variation but with an overall increasing trend
+    const trendFactor = (6 - i) / 10; // Creates a slight upward trend
+    
+    mockData.push({
+      id: `activity-${i}`,
+      type: i % 2 === 0 ? 'workout' : 'regular',
+      duration: `${baseActiveMinutes} minutes`,
+      caloriesBurned: Math.round(baseCalories * (1 + trendFactor)),
+      timestamp: date.toISOString(),
+      date: formatDate(date),
+      steps: Math.round(baseSteps * (1 + trendFactor)),
+      calories: Math.round(baseCalories * (1 + trendFactor)),
+      sleep: Number((baseSleep * (1 + trendFactor * 0.2)).toFixed(1)),
+      activeMinutes: Math.round(baseActiveMinutes * (1 + trendFactor))
+    });
+  }
+  
+  return mockData;
 };
 
 export const fetchSentimentData = async (friendId: string): Promise<any[]> => {
