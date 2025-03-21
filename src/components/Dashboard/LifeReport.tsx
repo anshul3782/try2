@@ -4,7 +4,7 @@ import DataCard from '@/components/UI/DataCard';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { FileText, Download, Share2, Star, Calendar, Clock, MessageSquare, Users } from "lucide-react";
+import { FileText, Download, Share2, Star, Calendar, Clock, MessageSquare, Users, Activity, MapPin, Smile } from "lucide-react";
 import { cn } from '@/lib/utils';
 
 interface ReportHighlight {

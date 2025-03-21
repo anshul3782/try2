@@ -1,7 +1,7 @@
 
 import React from 'react';
 import DataCard from '@/components/UI/DataCard';
-import BarChart from '@/components/UI/BarChart';
+import BarChart, { BarChartData } from '@/components/UI/BarChart';
 import { Progress } from "@/components/ui/progress";
 import { Heart, Activity, BedDouble, Footprints } from "lucide-react";
 import { cn } from '@/lib/utils';
@@ -39,6 +39,13 @@ const ActivityMetrics = ({
   const getProgressPercentage = (value: number, goal: number) => {
     return Math.min(100, Math.round((value / goal) * 100));
   };
+  
+  // Convert ActivityData to BarChartData
+  const chartData: BarChartData[] = data.map(item => ({
+    name: item.date,
+    steps: item.steps,
+    activeMinutes: item.activeMinutes
+  }));
   
   return (
     <DataCard 
@@ -132,8 +139,8 @@ const ActivityMetrics = ({
         {/* Activity chart */}
         <div className="pt-2">
           <BarChart
-            data={data}
-            xAxisDataKey="date"
+            data={chartData}
+            xAxisDataKey="name"
             bars={[
               { dataKey: 'steps', name: 'Steps', color: 'hsl(var(--primary))' },
               { dataKey: 'activeMinutes', name: 'Active Minutes', color: 'hsl(var(--activity-high))' }

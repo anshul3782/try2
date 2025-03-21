@@ -45,7 +45,6 @@ const BarChart = ({
             left: 0,
             bottom: 5,
           }}
-          animationDuration={animationDuration}
           barGap={5}
           barSize={20}
         >
@@ -88,6 +87,7 @@ const BarChart = ({
               radius={[4, 4, 0, 0]}
               stackId={bar.stackId}
               animationBegin={index * 100}
+              animationDuration={animationDuration}
             />
           ))}
         </RechartsBarChart>

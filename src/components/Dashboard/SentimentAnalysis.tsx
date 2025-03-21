@@ -1,7 +1,7 @@
 
 import React from 'react';
 import DataCard from '@/components/UI/DataCard';
-import LineChart from '@/components/UI/LineChart';
+import LineChart, { LineChartData } from '@/components/UI/LineChart';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { InfoIcon, ArrowUpIcon, ArrowDownIcon, TrendingUpIcon, Smile, Meh, Frown } from "lucide-react";
@@ -44,6 +44,14 @@ const SentimentAnalysis = ({ data = [], isLoading = false, className }: Sentimen
     if (score > -0.05) return <Meh className="h-5 w-5 text-sentiment-neutral" />;
     return <Frown className="h-5 w-5 text-sentiment-negative" />;
   };
+  
+  // Convert SentimentData to LineChartData
+  const chartData: LineChartData[] = data.map(item => ({
+    name: item.period,
+    positive: item.positive,
+    neutral: item.neutral,
+    negative: item.negative
+  }));
   
   return (
     <DataCard 
@@ -101,8 +109,8 @@ const SentimentAnalysis = ({ data = [], isLoading = false, className }: Sentimen
         
         <div className="h-64">
           <LineChart
-            data={data}
-            xAxisDataKey="period"
+            data={chartData}
+            xAxisDataKey="name"
             lines={[
               { dataKey: 'positive', name: 'Positive', color: 'hsl(var(--sentiment-positive))' },
               { dataKey: 'neutral', name: 'Neutral', color: 'hsl(var(--sentiment-neutral))' },

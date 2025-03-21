@@ -47,7 +47,6 @@ const LineChart = ({
             left: 0,
             bottom: 5,
           }}
-          animationDuration={animationDuration}
         >
           {showGrid && <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />}
           <XAxis 
