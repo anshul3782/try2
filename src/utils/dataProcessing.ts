@@ -1,5 +1,7 @@
 
-import { LocationData, ActivityData, SocialPost } from '@/types/dashboard';
+import { LocationData } from '@/components/Dashboard/LocationTimeline';
+import { ActivityData } from '@/components/Dashboard/ActivityMetrics';
+import { SocialPost } from '@/components/Dashboard/SocialFeed';
 import { analyzeSentiment, generateSentimentSummary, generateSentimentNarrative } from './sentimentAnalysis';
 
 export interface ProcessedLifeData {
@@ -86,9 +88,9 @@ const processSocialData = (posts: SocialPost[]) => {
   let highestEngagement = 0;
   
   posts.forEach(post => {
-    const engagement = post.likes + 
-                       post.comments * 2 + 
-                       0; // No shares in the current SocialPost type
+    const engagement = (post.metrics?.likes || 0) + 
+                       (post.metrics?.comments || 0) * 2 + 
+                       (post.metrics?.shares || 0) * 3;
     
     if (engagement > highestEngagement) {
       highestEngagement = engagement;
@@ -199,19 +201,11 @@ const processActivityData = (activities: ActivityData[]) => {
  */
 const processSentimentData = (posts: SocialPost[], locations: LocationData[]) => {
   // Collect all sentiment scores from social posts
-  const socialSentiments = posts.map(post => {
-    // Since the SocialPost type doesn't have a sentiment property,
-    // we'll analyze the content to generate sentiment
-    const sentimentResult = analyzeSentiment(post.content);
-    return {
-      platform: post.platform,
-      timestamp: post.timestamp,
-      sentiment: { 
-        score: sentimentResult.score, 
-        label: sentimentResult.label as 'positive' | 'negative' | 'neutral' 
-      }
-    };
-  });
+  const socialSentiments = posts.map(post => ({
+    platform: post.platform,
+    timestamp: post.timestamp,
+    sentiment: post.sentiment || { score: 0, label: 'neutral' as const }
+  }));
   
   // Collect sentiment scores by platform
   const platformSentiments: Record<string, number[]> = {};
@@ -258,7 +252,7 @@ const processSentimentData = (posts: SocialPost[], locations: LocationData[]) =>
   
   const overallScore = allScores.length
     ? allScores.reduce((sum, score) => sum + score, 0) / allScores.length
-    : 0.5; // Default to neutral if no scores
+    : 0;
   
   // Generate sentiment summary
   const sentimentResults = posts

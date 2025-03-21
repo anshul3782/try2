@@ -1,647 +1,899 @@
-import { SocialPost, LocationData, ActivityData } from '@/types/dashboard';
+import { SocialPost } from '@/components/Dashboard/SocialFeed';
+import { LocationData } from '@/components/Dashboard/LocationTimeline';
+import { ActivityData } from '@/components/Dashboard/ActivityMetrics';
+import { ReportData } from '@/components/Dashboard/LifeReport';
 import { Friend } from '@/context/DashboardContext';
 
-export const fetchSocialData = async (): Promise<SocialPost[]> => {
-  // Simulate API call with a delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // Mock data
-  return [
-    {
-      id: '1',
-      content: 'Just finished my morning run! 🏃‍♂️',
-      timestamp: new Date().toISOString(),
-      likes: 12,
-      comments: 3,
-      author: {
-        name: 'John Smith',
-        handle: '@johnsmith',
-        avatar: '/placeholder.svg'
-      },
-      platform: 'twitter'
-    },
-    {
-      id: '2',
-      content: 'Working on a new project. So excited to share it soon! 💻',
-      timestamp: new Date(Date.now() - 3600000).toISOString(),
-      likes: 24,
-      comments: 8,
-      author: {
-        name: 'Jane Doe',
-        handle: '@janedoe',
-        avatar: '/placeholder.svg'
-      },
-      platform: 'twitter'
-    },
-    {
-      id: '3',
-      content: 'Beautiful sunset today! #nofilter',
-      timestamp: new Date(Date.now() - 7200000).toISOString(),
-      likes: 56,
-      comments: 4,
-      author: {
-        name: 'Mike Johnson',
-        handle: '@mikej',
-        avatar: '/placeholder.svg'
-      },
-      platform: 'instagram'
-    }
-  ];
-};
-
-export const fetchLocationData = async (friendId: string): Promise<LocationData[]> => {
-  // Simulate API call with a delay
-  await new Promise(resolve => setTimeout(resolve, 700));
-  
-  // Generate multiple location entries for a day
-  const generateTimelineEntries = (baseLocations: LocationData[]): LocationData[] => {
-    // We'll keep the original entries and add more randomized ones
-    const result: LocationData[] = [...baseLocations];
-    
-    // Common places that might appear in a person's day
-    const commonPlaces = [
-      { 
-        name: 'Coffee Shop', 
-        type: 'food' as const,
-        emotion: { primary: 'happy' as const, intensity: 0.7, note: 'Great coffee today!' }
-      },
-      { 
-        name: 'Grocery Store', 
-        type: 'shopping' as const,
-        emotion: { primary: 'neutral' as const, intensity: 0.5, note: 'Weekly shopping trip' }
-      },
-      { 
-        name: 'Gas Station', 
-        type: 'other' as const,
-        emotion: { primary: 'neutral' as const, intensity: 0.4, note: 'Filled up the tank' }
-      },
-      { 
-        name: 'Gym', 
-        type: 'other' as const,
-        emotion: { primary: 'happy' as const, intensity: 0.8, note: 'Great workout!' }
-      },
-      { 
-        name: 'Restaurant', 
-        type: 'food' as const,
-        emotion: { primary: 'happy' as const, intensity: 0.9, note: 'Delicious dinner' }
-      },
-      { 
-        name: 'Park', 
-        type: 'park' as const,
-        emotion: { primary: 'happy' as const, intensity: 0.7, note: 'Nice evening walk' }
-      },
-      { 
-        name: 'Library', 
-        type: 'other' as const,
-        emotion: { primary: 'neutral' as const, intensity: 0.6, note: 'Studying for exams' }
-      },
-      { 
-        name: 'Mall', 
-        type: 'shopping' as const,
-        emotion: { primary: 'happy' as const, intensity: 0.6, note: 'Found that item I was looking for!' }
-      },
-      { 
-        name: 'Pharmacy', 
-        type: 'other' as const,
-        emotion: { primary: 'neutral' as const, intensity: 0.5, note: 'Picking up prescription' }
-      },
-      { 
-        name: 'Post Office', 
-        type: 'other' as const,
-        emotion: { primary: 'neutral' as const, intensity: 0.4, note: 'Mailing a package' }
-      }
-    ];
-    
-    // Friend-specific locations
-    const friendSpecificPlaces: Record<string, any[]> = {
-      lena: [
-        { 
-          name: 'Brooklyn Public Library', 
-          type: 'other' as const,
-          emotion: { primary: 'happy' as const, intensity: 0.7, note: 'Found a great book on medicine' }
-        },
-        { 
-          name: 'Patient Consultation', 
-          type: 'hospital' as const,
-          emotion: { primary: 'neutral' as const, intensity: 0.6, note: 'Meeting with patients' }
-        },
-        { 
-          name: 'Lunch with Colleagues', 
-          type: 'food' as const,
-          emotion: { primary: 'happy' as const, intensity: 0.8, note: 'Great conversation with the nursing staff' }
-        },
-        { 
-          name: 'Medical Conference Call', 
-          type: 'work' as const,
-          emotion: { primary: 'neutral' as const, intensity: 0.5, note: 'Discussing treatment protocols' }
-        }
-      ],
-      sheetal: [
-        { 
-          name: 'Stock Market Analysis', 
-          type: 'work' as const,
-          emotion: { primary: 'happy' as const, intensity: 0.7, note: 'Markets are looking good today' }
-        },
-        { 
-          name: 'Yoga Studio', 
-          type: 'other' as const,
-          emotion: { primary: 'happy' as const, intensity: 0.9, note: 'Perfect morning yoga session' }
-        },
-        { 
-          name: 'Investor Meeting', 
-          type: 'work' as const,
-          emotion: { primary: 'neutral' as const, intensity: 0.6, note: 'Discussing portfolio strategy' }
-        }
-      ],
-      arnav: [
-        { 
-          name: 'Software Development Meeting', 
-          type: 'work' as const,
-          emotion: { primary: 'happy' as const, intensity: 0.8, note: 'Project is ahead of schedule' }
-        },
-        { 
-          name: 'Tech Meetup', 
-          type: 'other' as const,
-          emotion: { primary: 'happy' as const, intensity: 0.9, note: 'Gave a talk on machine learning' }
-        },
-        { 
-          name: 'Code Review', 
-          type: 'work' as const,
-          emotion: { primary: 'neutral' as const, intensity: 0.5, note: 'Reviewing pull requests' }
-        }
-      ],
-      shahraan: [
-        { 
-          name: 'Scarsdale Elementary School', 
-          type: 'school' as const,
-          emotion: { primary: 'happy' as const, intensity: 0.8, note: 'I got a gold star in art class!' }
-        },
-        { 
-          name: 'Recess', 
-          type: 'school' as const,
-          emotion: { primary: 'happy' as const, intensity: 0.9, note: 'Playing tag with my friends' }
-        },
-        { 
-          name: 'Math Class', 
-          type: 'school' as const,
-          emotion: { primary: 'neutral' as const, intensity: 0.6, note: 'Learning multiplication tables' }
-        },
-        { 
-          name: 'Playground', 
-          type: 'park' as const,
-          emotion: { primary: 'happy' as const, intensity: 0.9, note: 'Going down the big slide!' }
-        }
-      ]
-    };
-    
-    // Get specific places for this friend or use general ones
-    const specificPlaces = friendSpecificPlaces[friendId] || [];
-    
-    // All places to choose from
-    const allPlaces = [...commonPlaces, ...specificPlaces];
-    
-    // Generate 30 total timeline entries
-    const targetCount = 30;
-    const moreNeeded = targetCount - result.length;
-    
-    // Generate times throughout the day
-    const generateTime = (hour: number, minute: number = 0): string => {
-      const period = hour >= 12 ? 'PM' : 'AM';
-      const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-      return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
-    };
-    
-    // Generate addresses based on location
-    const generateAddress = (friendId: string): string => {
-      const locations: Record<string, string[]> = {
-        lena: ['Brooklyn', 'Williamsburg', 'Park Slope', 'Flatbush', 'Crown Heights'],
-        sheetal: ['Queens', 'Astoria', 'Flushing', 'Jamaica', 'Forest Hills'],
-        arnav: ['Staten Island', 'St. George', 'Tottenville', 'Great Kills'],
-        shahraan: ['Manhattan', 'Chelsea', 'SoHo', 'Tribeca', 'Midtown']
-      };
-      
-      const area = locations[friendId] || ['New York'];
-      const selectedArea = area[Math.floor(Math.random() * area.length)];
-      return `${Math.floor(Math.random() * 1000) + 1} ${selectedArea} ${Math.random() > 0.5 ? 'Ave' : 'St'}`;
-    };
-    
-    // Create a mapping of hours to existing entries
-    const existingHours = new Set(result.map(loc => {
-      const parts = loc.time.split(':');
-      const hour = parseInt(parts[0]);
-      return hour + (loc.time.includes('PM') && hour !== 12 ? 12 : 0);
-    }));
-    
-    for (let i = 0; i < moreNeeded; i++) {
-      // Find an available hour
-      let hour;
-      do {
-        hour = Math.floor(Math.random() * 16) + 7; // 7 AM to 10 PM
-      } while (existingHours.has(hour));
-      
-      existingHours.add(hour);
-      
-      // Choose a random place
-      const place = allPlaces[Math.floor(Math.random() * allPlaces.length)];
-      
-      // Duration between 15 and 90 minutes
-      const durationMinutes = Math.floor(Math.random() * 76) + 15;
-      
-      result.push({
-        id: `loc${result.length + 1}`,
-        name: place.name,
-        type: place.type,
-        address: generateAddress(friendId),
-        time: generateTime(hour, Math.floor(Math.random() * 4) * 15), // Round to quarters of an hour
-        duration: `${durationMinutes} min`,
-        coordinates: { 
-          lat: 40.7 + (Math.random() * 0.1 - 0.05), 
-          lng: -74 + (Math.random() * 0.1 - 0.05) 
-        },
-        emotion: place.emotion
-      });
-    }
-    
-    // Sort by time of day
-    return result.sort((a, b) => {
-      // Parse the time strings
-      const timeA = a.time;
-      const timeB = b.time;
-      
-      // Extract hours
-      const hourA = parseInt(timeA.split(':')[0]);
-      const hourB = parseInt(timeB.split(':')[0]);
-      
-      // Adjust for AM/PM
-      const adjustedHourA = hourA + (timeA.includes('PM') && hourA !== 12 ? 12 : 0) - (timeA.includes('AM') && hourA === 12 ? 12 : 0);
-      const adjustedHourB = hourB + (timeB.includes('PM') && hourB !== 12 ? 12 : 0) - (timeB.includes('AM') && hourB === 12 ? 12 : 0);
-      
-      if (adjustedHourA !== adjustedHourB) {
-        return adjustedHourA - adjustedHourB;
-      }
-      
-      // If hours are the same, compare minutes
-      const minuteA = parseInt(timeA.split(':')[1].split(' ')[0]);
-      const minuteB = parseInt(timeB.split(':')[1].split(' ')[0]);
-      return minuteA - minuteB;
-    });
-  };
-  
-  // Define basic locations for different friends
-  const locations: Record<string, LocationData[]> = {
-    lena: [
-      {
-        id: 'loc1',
-        name: 'Home',
-        type: 'home',
-        address: '123 Brooklyn Ave, Brooklyn',
-        time: '07:00 AM',
-        duration: '30 min',
-        coordinates: { lat: 40.6782, lng: -73.9442 },
-        emotion: {
-          primary: 'happy',
-          intensity: 0.7,
-          note: 'Had a good breakfast and ready for the day'
-        }
-      },
-      {
-        id: 'loc2',
-        name: 'NYC Health + Hospitals/Kings County',
-        type: 'hospital',
-        address: '451 Clarkson Ave, Brooklyn',
-        time: '08:15 AM',
-        duration: '8 hours',
-        coordinates: { lat: 40.6559, lng: -73.9455 },
-        emotion: {
-          primary: 'neutral',
-          intensity: 0.5,
-          note: 'Starting my shift at the hospital'
-        }
-      },
-      {
-        id: 'loc3',
-        name: 'Prospect Park',
-        type: 'park',
-        address: 'Prospect Park, Brooklyn',
-        time: '05:30 PM',
-        duration: '45 min',
-        coordinates: { lat: 40.6602, lng: -73.9690 },
-        emotion: {
-          primary: 'happy',
-          intensity: 0.8,
-          note: 'Lovely evening walk after work'
-        }
-      }
-    ],
-    sheetal: [
-      {
-        id: 'loc1',
-        name: 'Morning Run',
-        type: 'park',
-        address: 'Flushing Meadows Park',
-        time: '06:30 AM',
-        duration: '45 min',
-        coordinates: { lat: 40.7282, lng: -73.8397 },
-        emotion: {
-          primary: 'happy',
-          intensity: 0.9,
-          note: 'Great morning run, feeling energized!'
-        }
-      },
-      {
-        id: 'loc2',
-        name: 'Home Office',
-        type: 'work',
-        address: '78 Queens Blvd, Queens',
-        time: '09:00 AM',
-        duration: '3 hours',
-        coordinates: { lat: 40.7331, lng: -73.8697 },
-        emotion: {
-          primary: 'neutral',
-          intensity: 0.6,
-          note: 'Analyzing stock market trends'
-        }
-      },
-      {
-        id: 'loc3',
-        name: 'Lunch Break',
-        type: 'food',
-        address: 'Health Foods Cafe',
-        time: '12:00 PM',
-        duration: '45 min',
-        coordinates: { lat: 40.7362, lng: -73.8755 },
-        emotion: {
-          primary: 'happy',
-          intensity: 0.7,
-          note: 'Breaking my fast with a healthy meal'
-        }
-      },
-      {
-        id: 'loc4',
-        name: 'Home Trading Desk',
-        type: 'work',
-        address: '78 Queens Blvd, Queens',
-        time: '08:00 PM',
-        duration: '4 hours',
-        coordinates: { lat: 40.7331, lng: -73.8697 },
-        emotion: {
-          primary: 'neutral',
-          intensity: 0.4,
-          note: 'Evening stock trading session'
-        }
-      }
-    ],
-    shahraan: [
-      {
-        id: 'loc1',
-        name: 'Home',
-        type: 'home',
-        address: '23 Maple Ave, Scarsdale',
-        time: '07:00 AM',
-        duration: '1 hour',
-        coordinates: { lat: 41.0051, lng: -73.7868 },
-        emotion: {
-          primary: 'happy',
-          intensity: 0.8,
-          note: 'Mom made my favorite breakfast!'
-        }
-      },
-      {
-        id: 'loc2',
-        name: 'Scarsdale Elementary School',
-        type: 'school',
-        address: '54 School Lane, Scarsdale',
-        time: '08:30 AM',
-        duration: '7 hours',
-        coordinates: { lat: 41.0096, lng: -73.7932 },
-        emotion: {
-          primary: 'happy',
-          intensity: 0.7,
-          note: 'I love school days!'
-        }
-      },
-      {
-        id: 'loc3',
-        name: 'After School Program',
-        type: 'school',
-        address: '54 School Lane, Scarsdale',
-        time: '03:30 PM',
-        duration: '2 hours',
-        coordinates: { lat: 41.0096, lng: -73.7932 },
-        emotion: {
-          primary: 'happy',
-          intensity: 0.9,
-          note: 'We built a cool robot in science club!'
-        }
-      }
-    ]
-  };
-  
-  // Default locations for any friend not specifically defined
-  const defaultLocations: LocationData[] = [
-    {
-      id: 'loc1',
-      name: 'Home',
-      type: 'home',
-      address: '123 Main St',
-      time: '07:00 AM',
-      duration: '1 hour',
-      coordinates: { lat: 40.7128, lng: -74.0060 },
-      emotion: {
-        primary: 'neutral',
-        intensity: 0.5
-      }
-    },
-    {
-      id: 'loc2',
-      name: 'Work',
-      type: 'work',
-      address: '456 Business Ave',
-      time: '09:00 AM',
-      duration: '8 hours',
-      coordinates: { lat: 40.7580, lng: -73.9855 },
-      emotion: {
-        primary: 'happy',
-        intensity: 0.6,
-        note: 'Productive day at work'
-      }
-    },
-    {
-      id: 'loc3',
-      name: 'Gym',
-      type: 'other',
-      address: '789 Fitness Blvd',
-      time: '06:00 PM',
-      duration: '1 hour',
-      coordinates: { lat: 40.7390, lng: -73.9900 },
-      emotion: {
-        primary: 'happy',
-        intensity: 0.8,
-        note: 'Great workout!'
-      }
-    }
-  ];
-  
-  const baseLocations = locations[friendId] || defaultLocations;
-  return generateTimelineEntries(baseLocations);
-};
-
-export const fetchActivityData = async (): Promise<ActivityData[]> => {
-  // Simulate API call with a delay
-  await new Promise(resolve => setTimeout(resolve, 600));
-  
-  // Get current date and previous days for the mock data
-  const today = new Date();
-  const formatDate = (date: Date): string => {
-    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
-  };
-  
-  // Create mock data for the last 7 days
-  const mockData: ActivityData[] = [];
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(today.getDate() - i);
-    
-    // Generate random activity data with increasing trend
-    const baseSteps = 7000 + Math.floor(Math.random() * 4000);
-    const baseActiveMinutes = 20 + Math.floor(Math.random() * 20);
-    const baseCalories = 1800 + Math.floor(Math.random() * 800);
-    const baseSleep = 6 + (Math.random() * 2);
-    
-    // Add some variation but with an overall increasing trend
-    const trendFactor = (6 - i) / 10; // Creates a slight upward trend
-    
-    mockData.push({
-      id: `activity-${i}`,
-      type: i % 2 === 0 ? 'workout' : 'regular',
-      duration: `${baseActiveMinutes} minutes`,
-      caloriesBurned: Math.round(baseCalories * (1 + trendFactor)),
-      timestamp: date.toISOString(),
-      date: formatDate(date),
-      steps: Math.round(baseSteps * (1 + trendFactor)),
-      calories: Math.round(baseCalories * (1 + trendFactor)),
-      sleep: Number((baseSleep * (1 + trendFactor * 0.2)).toFixed(1)),
-      activeMinutes: Math.round(baseActiveMinutes * (1 + trendFactor))
-    });
-  }
-  
-  return mockData;
-};
-
-export const fetchSentimentData = async (friendId: string): Promise<any[]> => {
-  // Simulate API call with a delay
-  await new Promise(resolve => setTimeout(resolve, 900));
-  
-  // Mock data
-  return [
-    {
-      id: '1',
-      date: new Date().toISOString(),
-      score: 0.75,
-      magnitude: 0.5
-    },
-    {
-      id: '2',
-      date: new Date(Date.now() - 86400000).toISOString(),
-      score: 0.60,
-      magnitude: 0.4
-    },
-    {
-      id: '3',
-      date: new Date(Date.now() - 172800000).toISOString(),
-      score: 0.80,
-      magnitude: 0.6
-    }
-  ];
-};
-
-export const fetchLifeReport = async (): Promise<any> => {
-  // Simulate API call with a delay
-  await new Promise(resolve => setTimeout(resolve, 1200));
-  
-  // Mock data
-  return {
-    id: '1',
-    date: new Date().toISOString(),
-    sleepHours: 7.5,
-    stressLevel: 0.4,
-    mood: 'good'
-  };
-};
-
-export const fetchPrivacySettings = async (): Promise<any[]> => {
-  // Simulate API call with a delay
-  await new Promise(resolve => setTimeout(resolve, 400));
-  
-  // Mock data
-  return [
-    {
-      id: '1',
-      setting: 'location sharing',
-      enabled: true
-    },
-    {
-      id: '2',
-      setting: 'activity tracking',
-      enabled: false
-    }
-  ];
-};
-
+// Mock function to fetch friends data
 export const fetchFriendsData = async (): Promise<Friend[]> => {
-  // Simulate API call with a delay
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  // Mock data - updated to include only the requested friends without surnames
-  return [
-    {
-      id: 'lena',
-      name: 'Lena',
-      location: 'Brooklyn, NY',
-      currentEmotion: 'happy',
-      emotionIntensity: 0.8,
-      description: 'Enjoying my morning commute!',
-      avatar: '/placeholder.svg'
-    },
-    {
-      id: 'sheetal',
-      name: 'Sheetal',
-      location: 'Queens, NY',
-      currentEmotion: 'happy',
-      emotionIntensity: 0.7,
-      description: 'Morning run was great!',
-      avatar: '/placeholder.svg'
-    },
-    {
-      id: 'arnav',
-      name: 'Arnav',
-      location: 'Staten Island, NY',
-      currentEmotion: 'happy',
-      emotionIntensity: 0.9,
-      description: 'Just got promoted!',
-      avatar: '/placeholder.svg'
-    },
-    {
-      id: 'shahraan',
-      name: 'Shahraan',
-      location: 'Scarsdale, NY',
-      currentEmotion: 'happy',
-      emotionIntensity: 0.9,
-      description: 'I got an A on my spelling test!',
-      avatar: '/placeholder.svg'
-    }
-  ];
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          id: 'arnav',
+          name: 'Arnav',
+          location: 'ASU, Tempe',
+          currentEmotion: 'happy',
+          emotionIntensity: 0.8,
+          description: 'Feeling great after acing my computer science exam!'
+        },
+        {
+          id: 'sheetal',
+          name: 'Sheetal',
+          location: 'Manhattan, New York',
+          currentEmotion: 'neutral',
+          emotionIntensity: 0.5,
+          description: 'Busy day at work, looking forward to the weekend'
+        },
+        {
+          id: 'shahraan',
+          name: 'Shahraan',
+          location: 'Scarsdale, New York',
+          currentEmotion: 'happy',
+          emotionIntensity: 0.9,
+          description: 'Had a great day at school, excited for baseball practice!'
+        },
+        {
+          id: 'lena',
+          name: 'Lena',
+          location: 'Queens, New York',
+          currentEmotion: 'tired',
+          emotionIntensity: 0.7,
+          description: 'Long shift at the hospital, need some rest'
+        }
+      ]);
+    }, 1000);
+  });
 };
 
-export const updateFriendEmotion = async (
-  friendId: string,
-  emotion: 'happy' | 'sad' | 'angry' | 'surprised' | 'scared' | 'neutral',
-  intensity: number,
-  comment: string
-): Promise<boolean> => {
-  // Simulate API call with a delay
-  await new Promise(resolve => setTimeout(resolve, 800));
-  
-  // Just return success in this mock implementation
-  return true;
+// Mock function to fetch social media data
+export const fetchSocialData = async (): Promise<SocialPost[]> => {
+  // In a real app, you would fetch this from APIs
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          id: '1',
+          platform: 'twitter',
+          author: {
+            name: 'John Doe',
+            handle: 'johndoe',
+            avatar: ''
+          },
+          content: 'Just finished a great workout at the gym! Feeling energized and ready for the day ahead. #fitness #wellness',
+          timestamp: '2 hours ago',
+          metrics: {
+            likes: 12,
+            comments: 3,
+            shares: 2
+          },
+          sentiment: {
+            score: 0.8,
+            label: 'positive'
+          }
+        },
+        {
+          id: '2',
+          platform: 'facebook',
+          author: {
+            name: 'John Doe',
+            avatar: ''
+          },
+          content: 'Had a frustrating experience with customer service today. Still waiting for a resolution after 2 hours on the phone.',
+          timestamp: '5 hours ago',
+          metrics: {
+            likes: 5,
+            comments: 8,
+            shares: 0
+          },
+          sentiment: {
+            score: -0.6,
+            label: 'negative'
+          }
+        },
+        {
+          id: '3',
+          platform: 'linkedin',
+          author: {
+            name: 'John Doe',
+            handle: 'johndoe',
+            avatar: ''
+          },
+          content: 'Excited to announce that I\'ll be speaking at the upcoming tech conference next month! Looking forward to sharing insights on data privacy and analytics.',
+          timestamp: 'Yesterday',
+          metrics: {
+            likes: 45,
+            comments: 7,
+            shares: 5
+          },
+          sentiment: {
+            score: 0.7,
+            label: 'positive'
+          },
+          link: 'https://example.com/conference'
+        },
+        {
+          id: '4',
+          platform: 'email',
+          author: {
+            name: 'Project Team',
+            handle: 'team@example.com',
+            avatar: ''
+          },
+          content: 'The quarterly report is now available for review. Please provide your feedback by the end of the week.',
+          timestamp: 'Yesterday',
+          sentiment: {
+            score: 0.1,
+            label: 'neutral'
+          }
+        },
+        {
+          id: '5',
+          platform: 'instagram',
+          author: {
+            name: 'John Doe',
+            handle: 'johndoe',
+            avatar: ''
+          },
+          content: 'Beautiful sunset at the beach today. The perfect end to a relaxing weekend! #sunset #weekend #beach',
+          timestamp: '2 days ago',
+          metrics: {
+            likes: 87,
+            comments: 12,
+            shares: 0
+          },
+          sentiment: {
+            score: 0.9,
+            label: 'positive'
+          }
+        }
+      ]);
+    }, 1500);
+  });
+};
+
+// Mock function to fetch location data - updated to be friend-specific
+export const fetchLocationData = async (friendId = 'arnav'): Promise<LocationData[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      if (friendId === 'arnav') {
+        resolve([
+          {
+            id: '1',
+            name: 'Campus Dorm',
+            type: 'home',
+            address: 'ASU Tooker House, Tempe',
+            time: '7:00 AM',
+            duration: '45 minutes',
+            coordinates: {
+              lat: 33.4145,
+              lng: -111.9280
+            },
+            emotion: {
+              primary: 'neutral',
+              intensity: 0.3,
+              note: 'Just woke up, feeling a bit groggy but ready for class'
+            }
+          },
+          {
+            id: '2',
+            name: 'Campus Dining Hall',
+            type: 'food',
+            address: 'ASU Memorial Union, Tempe',
+            time: '8:00 AM',
+            duration: '30 minutes',
+            coordinates: {
+              lat: 33.4175,
+              lng: -111.9350
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.5,
+              note: 'Had a good breakfast with friends'
+            }
+          },
+          {
+            id: '3',
+            name: 'Computer Science Building',
+            type: 'school',
+            address: 'ASU Brickyard, Tempe',
+            time: '9:00 AM',
+            duration: '2 hours',
+            coordinates: {
+              lat: 33.4225,
+              lng: -111.9400
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.9,
+              note: 'Aced my computer science exam!'
+            }
+          },
+          {
+            id: '4',
+            name: 'Library Study Session',
+            type: 'school',
+            address: 'Hayden Library, ASU Tempe',
+            time: '12:00 PM',
+            duration: '2 hours 30 minutes',
+            coordinates: {
+              lat: 33.4190,
+              lng: -111.9350
+            },
+            emotion: {
+              primary: 'neutral',
+              intensity: 0.6,
+              note: 'Working on group project, making good progress'
+            }
+          },
+          {
+            id: '5',
+            name: 'Campus Recreation',
+            type: 'park',
+            address: 'Sun Devil Fitness Complex, Tempe',
+            time: '3:00 PM',
+            duration: '1 hour',
+            coordinates: {
+              lat: 33.4160,
+              lng: -111.9320
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.7,
+              note: 'Great workout, feeling energized'
+            }
+          },
+          {
+            id: '6',
+            name: 'Coffee with Friends',
+            type: 'food',
+            address: 'Dutch Bros Coffee, Tempe',
+            time: '5:00 PM',
+            duration: '1 hour',
+            coordinates: {
+              lat: 33.4150,
+              lng: -111.9270
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.8,
+              note: 'Hanging out with friends, sharing good news about exam'
+            }
+          },
+          {
+            id: '7',
+            name: 'Back at Dorm',
+            type: 'home',
+            address: 'ASU Tooker House, Tempe',
+            time: '7:00 PM',
+            coordinates: {
+              lat: 33.4145,
+              lng: -111.9280
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.6,
+              note: 'Relaxing after a great day'
+            }
+          }
+        ]);
+      } else if (friendId === 'sheetal') {
+        resolve([
+          {
+            id: '1',
+            name: 'Manhattan Apartment',
+            type: 'home',
+            address: '212 E 42nd St, Manhattan',
+            time: '6:30 AM',
+            duration: '45 minutes',
+            coordinates: {
+              lat: 40.7505,
+              lng: -73.9734
+            },
+            emotion: {
+              primary: 'neutral',
+              intensity: 0.3,
+              note: 'Starting another busy day'
+            }
+          },
+          {
+            id: '2',
+            name: 'Central Park Run',
+            type: 'park',
+            address: 'Central Park Reservoir Track',
+            time: '7:30 AM',
+            duration: '1 hour',
+            coordinates: {
+              lat: 40.7812,
+              lng: -73.9665
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.8,
+              note: 'Morning run always makes me feel great'
+            }
+          },
+          {
+            id: '3',
+            name: 'Coffee Shop',
+            type: 'food',
+            address: '401 Park Ave S, Manhattan',
+            time: '8:45 AM',
+            duration: '25 minutes',
+            coordinates: {
+              lat: 40.7425,
+              lng: -73.9845
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.6,
+              note: 'Good coffee to start the workday'
+            }
+          },
+          {
+            id: '4',
+            name: 'Office - Wall Street',
+            type: 'work',
+            address: '23 Wall St, Manhattan',
+            time: '9:30 AM',
+            duration: '4 hours',
+            coordinates: {
+              lat: 40.7068,
+              lng: -74.0106
+            },
+            emotion: {
+              primary: 'neutral',
+              intensity: 0.5,
+              note: 'Busy morning with meetings'
+            }
+          },
+          {
+            id: '5',
+            name: 'Lunch at Shake Shack',
+            type: 'food',
+            address: '215 Murray St, Manhattan',
+            time: '1:45 PM',
+            duration: '45 minutes',
+            coordinates: {
+              lat: 40.7149,
+              lng: -74.0133
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.7,
+              note: 'Great burger and took a nice break from work'
+            }
+          },
+          {
+            id: '6',
+            name: 'Back at Office',
+            type: 'work',
+            address: '23 Wall St, Manhattan',
+            time: '2:30 PM',
+            coordinates: {
+              lat: 40.7068,
+              lng: -74.0106
+            },
+            emotion: {
+              primary: 'neutral',
+              intensity: 0.5,
+              note: 'Afternoon meetings, looking forward to the weekend'
+            }
+          }
+        ]);
+      } else if (friendId === 'shahraan') {
+        resolve([
+          {
+            id: '1',
+            name: 'Home',
+            type: 'home',
+            address: 'Scarsdale, NY',
+            time: '7:00 AM',
+            duration: '1 hour',
+            coordinates: {
+              lat: 40.9884,
+              lng: -73.7776
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.6,
+              note: 'Excited for school today'
+            }
+          },
+          {
+            id: '2',
+            name: 'Scarsdale Elementary',
+            type: 'school',
+            address: 'Scarsdale, NY',
+            time: '8:30 AM',
+            duration: '3 hours 30 minutes',
+            coordinates: {
+              lat: 40.9900,
+              lng: -73.7800
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.8,
+              note: 'Got a gold star on my math homework!'
+            }
+          },
+          {
+            id: '3',
+            name: 'School Lunch',
+            type: 'food',
+            address: 'School Cafeteria',
+            time: '12:00 PM',
+            duration: '30 minutes',
+            coordinates: {
+              lat: 40.9900,
+              lng: -73.7800
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.7,
+              note: 'Pizza day is the best!'
+            }
+          },
+          {
+            id: '4',
+            name: 'Afternoon Classes',
+            type: 'school',
+            address: 'Scarsdale Elementary',
+            time: '12:30 PM',
+            duration: '3 hours',
+            coordinates: {
+              lat: 40.9900,
+              lng: -73.7800
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.9,
+              note: 'Art class was super fun today'
+            }
+          },
+          {
+            id: '5',
+            name: 'Baseball Practice',
+            type: 'park',
+            address: 'Scarsdale Little League Field',
+            time: '4:00 PM',
+            duration: '1 hour 30 minutes',
+            coordinates: {
+              lat: 40.9850,
+              lng: -73.7830
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.9,
+              note: 'Hit a home run at practice!'
+            }
+          },
+          {
+            id: '6',
+            name: 'Home for Dinner',
+            type: 'home',
+            address: 'Scarsdale, NY',
+            time: '6:00 PM',
+            coordinates: {
+              lat: 40.9884,
+              lng: -73.7776
+            },
+            emotion: {
+              primary: 'happy',
+              intensity: 0.8,
+              note: 'Mom made my favorite dinner'
+            }
+          }
+        ]);
+      } else if (friendId === 'lena') {
+        resolve([
+          {
+            id: '1',
+            name: 'Queens Apartment',
+            type: 'home',
+            address: 'Queens, NY',
+            time: '5:00 AM',
+            duration: '45 minutes',
+            coordinates: {
+              lat: 40.7282,
+              lng: -73.7949
+            },
+            emotion: {
+              primary: 'neutral',
+              intensity: 0.4,
+              note: 'Early morning, getting ready for hospital shift'
+            }
+          },
+          {
+            id: '2',
+            name: 'Subway Commute',
+            type: 'transit',
+            address: 'Queens Subway',
+            time: '6:00 AM',
+            duration: '45 minutes',
+            coordinates: {
+              lat: 40.7300,
+              lng: -73.8000
+            },
+            emotion: {
+              primary: 'neutral',
+              intensity: 0.3,
+              note: 'Quiet morning commute, preparing mentally for the day'
+            }
+          },
+          {
+            id: '3',
+            name: 'Queens Medical Center',
+            type: 'hospital',
+            address: 'Queens Hospital Center',
+            time: '7:00 AM',
+            duration: '6 hours',
+            coordinates: {
+              lat: 40.7420,
+              lng: -73.8200
+            },
+            emotion: {
+              primary: 'neutral',
+              intensity: 0.5,
+              note: 'Busy morning rounds, multiple patients to see'
+            }
+          },
+          {
+            id: '4',
+            name: 'Hospital Cafeteria',
+            type: 'food',
+            address: 'Queens Hospital Center',
+            time: '1:00 PM',
+            duration: '30 minutes',
+            coordinates: {
+              lat: 40.7420,
+              lng: -73.8200
+            },
+            emotion: {
+              primary: 'sad',
+              intensity: 0.6,
+              note: 'Had to deliver difficult news to a patient'
+            }
+          },
+          {
+            id: '5',
+            name: 'Emergency Department',
+            type: 'hospital',
+            address: 'Queens Hospital Center',
+            time: '1:30 PM',
+            duration: '5 hours 30 minutes',
+            coordinates: {
+              lat: 40.7420,
+              lng: -73.8200
+            },
+            emotion: {
+              primary: 'sad',
+              intensity: 0.7,
+              note: 'Very busy ER shift, challenging cases'
+            }
+          },
+          {
+            id: '6',
+            name: 'Subway Home',
+            type: 'transit',
+            address: 'Queens Subway',
+            time: '7:00 PM',
+            duration: '45 minutes',
+            coordinates: {
+              lat: 40.7300,
+              lng: -73.8000
+            },
+            emotion: {
+              primary: 'neutral',
+              intensity: 0.4,
+              note: 'Tired after long shift, looking forward to rest'
+            }
+          },
+          {
+            id: '7',
+            name: 'Home',
+            type: 'home',
+            address: 'Queens, NY',
+            time: '8:00 PM',
+            coordinates: {
+              lat: 40.7282,
+              lng: -73.7949
+            },
+            emotion: {
+              primary: 'neutral',
+              intensity: 0.6,
+              note: 'Need to rest, long day at the hospital'
+            }
+          }
+        ]);
+      } else {
+        // Default
+        resolve([]);
+      }
+    }, 1500);
+  });
+};
+
+// Mock function to fetch activity data
+export const fetchActivityData = async (): Promise<ActivityData[]> => {
+  // In a real app, you would fetch this from fitness trackers/health APIs
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          date: 'Monday',
+          steps: 8234,
+          calories: 1850,
+          sleep: 7.5,
+          activeMinutes: 35
+        },
+        {
+          date: 'Tuesday',
+          steps: 10543,
+          calories: 2100,
+          sleep: 8,
+          activeMinutes: 42
+        },
+        {
+          date: 'Wednesday',
+          steps: 7654,
+          calories: 1950,
+          sleep: 6.5,
+          activeMinutes: 28
+        },
+        {
+          date: 'Thursday',
+          steps: 9876,
+          calories: 2200,
+          sleep: 7,
+          activeMinutes: 45
+        },
+        {
+          date: 'Friday',
+          steps: 11234,
+          calories: 2350,
+          sleep: 7.5,
+          activeMinutes: 55
+        },
+        {
+          date: 'Saturday',
+          steps: 12543,
+          calories: 2450,
+          sleep: 8.5,
+          activeMinutes: 65
+        },
+        {
+          date: 'Sunday',
+          steps: 9234,
+          calories: 2150,
+          sleep: 8,
+          activeMinutes: 40
+        }
+      ]);
+    }, 1500);
+  });
+};
+
+// Mock function to fetch sentiment data - updated to be friend-specific
+export const fetchSentimentData = async (friendId = 'arnav'): Promise<any[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      if (friendId === 'arnav') {
+        resolve([
+          {
+            period: 'Monday',
+            happy: 0.65,
+            sad: 0.1,
+            angry: 0.0,
+            neutral: 0.25,
+            overall: 0.55,
+            primaryEmotion: 'happy',
+            locationCorrelation: [
+              {
+                type: 'school',
+                name: 'Computer Science Building',
+                score: 0.85
+              },
+              {
+                type: 'park',
+                name: 'Campus Recreation',
+                score: 0.72
+              }
+            ]
+          }
+        ]);
+      } else if (friendId === 'sheetal') {
+        resolve([
+          {
+            period: 'Monday',
+            happy: 0.55,
+            sad: 0.1,
+            angry: 0.05,
+            neutral: 0.3,
+            overall: 0.45,
+            primaryEmotion: 'happy',
+            locationCorrelation: [
+              {
+                type: 'park',
+                name: 'Central Park',
+                score: 0.9
+              },
+              {
+                type: 'food',
+                name: 'Shake Shack',
+                score: 0.75
+              }
+            ]
+          }
+        ]);
+      } else if (friendId === 'shahraan') {
+        resolve([
+          {
+            period: 'Monday',
+            happy: 0.8,
+            sad: 0.05,
+            angry: 0.05,
+            neutral: 0.1,
+            overall: 0.75,
+            primaryEmotion: 'happy',
+            locationCorrelation: [
+              {
+                type: 'park',
+                name: 'Baseball Field',
+                score: 0.95
+              },
+              {
+                type: 'food',
+                name: 'School Cafeteria',
+                score: 0.8
+              }
+            ]
+          }
+        ]);
+      } else if (friendId === 'lena') {
+        resolve([
+          {
+            period: 'Monday',
+            happy: 0.2,
+            sad: 0.4,
+            angry: 0.1,
+            neutral: 0.3,
+            overall: -0.1,
+            primaryEmotion: 'sad',
+            locationCorrelation: [
+              {
+                type: 'home',
+                name: 'Queens Apartment',
+                score: 0.6
+              },
+              {
+                type: 'food',
+                name: 'Coffee Shop',
+                score: 0.5
+              }
+            ]
+          }
+        ]);
+      } else {
+        // Default
+        resolve([]);
+      }
+    }, 1500);
+  });
+};
+
+// Mock function to fetch life report
+export const fetchLifeReport = async (): Promise<ReportData> => {
+  // In a real app, this would be generated from all the collected data
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        title: 'Your Sunday Summary',
+        period: 'Sunday, June 5, 2023',
+        timestamp: '11:59 PM',
+        summary: 'You had a balanced day with positive social interactions and good physical activity. Your overall sentiment was positive, and you visited 4 locations throughout the day. You spent most of your time at home and the park.',
+        highlights: [
+          {
+            type: 'insight',
+            title: 'Mood improvement after exercise',
+            description: 'Your sentiment scores increased significantly after your morning run.'
+          },
+          {
+            type: 'event',
+            title: 'Family dinner',
+            description: 'You spent 2 hours at an Italian restaurant with family members.'
+          },
+          {
+            type: 'social',
+            title: 'High engagement post',
+            description: 'Your beach sunset photo received 87 likes, your highest this week.'
+          },
+          {
+            type: 'wellness',
+            title: 'Sleep quality improvement',
+            description: 'You slept 8 hours with fewer disruptions than your weekly average.'
+          }
+        ],
+        stats: {
+          socialInteractions: 24,
+          events: 3,
+          locations: 4,
+          sentiment: 0.7
+        }
+      });
+    }, 1500);
+  });
+};
+
+// Mock function to fetch privacy settings
+export const fetchPrivacySettings = async (): Promise<any[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          id: 'location-tracking',
+          name: 'Location Tracking',
+          description: 'Allow the app to collect and analyze your location data',
+          enabled: true,
+          category: 'data'
+        },
+        {
+          id: 'social-content',
+          name: 'Social Media Content',
+          description: 'Collect and analyze content from your connected social accounts',
+          enabled: true,
+          category: 'data'
+        },
+        {
+          id: 'health-data',
+          name: 'Health & Activity Data',
+          description: 'Access step count, sleep, and other wellness metrics',
+          enabled: true,
+          category: 'data'
+        },
+        {
+          id: 'sentiment-analysis',
+          name: 'Sentiment Analysis',
+          description: 'Process text content to determine emotional tone',
+          enabled: true,
+          category: 'analytics'
+        },
+        {
+          id: 'behavioral-patterns',
+          name: 'Behavioral Pattern Analysis',
+          description: 'Identify patterns in your daily activities and habits',
+          enabled: true,
+          category: 'analytics'
+        },
+        {
+          id: 'social-graph',
+          name: 'Social Connection Analysis',
+          description: 'Analyze your social interactions and relationships',
+          enabled: false,
+          category: 'analytics'
+        },
+        {
+          id: 'aggregate-stats',
+          name: 'Anonymous Aggregate Statistics',
+          description: 'Contribute anonymous data to improve the app (no personal information)',
+          enabled: true,
+          category: 'sharing'
+        },
+        {
+          id: 'cross-device',
+          name: 'Cross-Device Synchronization',
+          description: 'Sync your data between different devices',
+          enabled: true,
+          category: 'sharing'
+        },
+        {
+          id: 'third-party',
+          name: 'Third-Party Integration',
+          description: 'Share data with connected third-party services',
+          enabled: false,
+          category: 'sharing'
+        }
+      ]);
+    }, 1500);
+  });
 };

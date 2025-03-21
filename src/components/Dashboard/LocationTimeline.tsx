@@ -1,25 +1,12 @@
 
 import React from 'react';
 import DataCard from '@/components/UI/DataCard';
+import Map from '@/components/UI/Map';
 import Timeline, { TimelineItem } from '@/components/UI/Timeline';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { 
-  Calendar, 
-  Pencil, 
-  Smile, 
-  Frown, 
-  Angry, 
-  HeartPulse, 
-  MapPin,
-  Home,
-  Building,
-  ShoppingBag,
-  Coffee,
-  Car,
-  TreePine,
-  BookOpen,
-  Stethoscope
-} from "lucide-react";
+import { MapPin, Building, Home, ShoppingBag, Coffee, Car, Calendar, 
+         Smile, Frown, Angry, BookOpen, Stethoscope, HeartPulse, Park } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { toast } from "sonner";
 
@@ -46,10 +33,20 @@ interface LocationTimelineProps {
   locations: LocationData[];
   isLoading?: boolean;
   className?: string;
-  onUpdateEmotion?: () => void;
 }
 
-const LocationTimeline = ({ locations = [], isLoading = false, className, onUpdateEmotion }: LocationTimelineProps) => {
+const LocationTimeline = ({ locations = [], isLoading = false, className }: LocationTimelineProps) => {
+  // Convert locations to map format
+  const mapLocations = locations.map(location => ({
+    id: location.id,
+    lat: location.coordinates.lat,
+    lng: location.coordinates.lng,
+    title: location.name,
+    description: location.address,
+    color: getLocationColor(location),
+    size: getLocationSize(location)
+  }));
+  
   // Convert locations to timeline format
   const timelineItems: TimelineItem[] = locations.map(location => ({
     id: location.id,
@@ -84,7 +81,7 @@ const LocationTimeline = ({ locations = [], isLoading = false, className, onUpda
       case 'shopping': return <ShoppingBag className="h-5 w-5" />;
       case 'food': return <Coffee className="h-5 w-5" />;
       case 'transit': return <Car className="h-5 w-5" />;
-      case 'park': return <TreePine className="h-5 w-5" />; 
+      case 'park': return <Park className="h-5 w-5" />;
       case 'school': return <BookOpen className="h-5 w-5" />;
       case 'hospital': return <Stethoscope className="h-5 w-5" />;
       default: return <MapPin className="h-5 w-5" />;
@@ -116,6 +113,14 @@ const LocationTimeline = ({ locations = [], isLoading = false, className, onUpda
       case 'hospital': return 'hsl(340, 82%, 52%)';
       default: return 'hsl(var(--muted-foreground))';
     }
+  }
+  
+  function getLocationSize(location: LocationData) {
+    // Make locations with stronger emotions larger
+    if (location.emotion) {
+      return 12 + (location.emotion.intensity * 8);
+    }
+    return 12;
   }
   
   function getLocationDescription(location: LocationData) {
@@ -153,35 +158,53 @@ const LocationTimeline = ({ locations = [], isLoading = false, className, onUpda
     return description;
   }
   
+  const handleRecordEmotion = () => {
+    toast.success("Emotion recorded for your current location", {
+      description: "Your emotional state has been saved."
+    });
+  };
+  
   return (
     <DataCard 
-      title="Daily Timeline" 
-      description="Places visited and how it felt"
+      title="Location & Emotion Timeline" 
+      description="Places you've been and how you felt"
       className={cn("", className)}
       isLoading={isLoading}
       animation="fade"
       delay={200}
     >
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          <Calendar className="h-4 w-4" />
-          <span>Today</span>
+      <Tabs defaultValue="timeline">
+        <div className="flex items-center justify-between mb-4">
+          <TabsList>
+            <TabsTrigger value="timeline" className="flex items-center gap-1.5">
+              <Calendar className="h-4 w-4" />
+              <span>Timeline</span>
+            </TabsTrigger>
+            <TabsTrigger value="map" className="flex items-center gap-1.5">
+              <MapPin className="h-4 w-4" />
+              <span>Emotional Map</span>
+            </TabsTrigger>
+          </TabsList>
+          
+          <Button variant="outline" size="sm" onClick={handleRecordEmotion}>Record emotion</Button>
         </div>
         
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={onUpdateEmotion}
-          className="flex items-center gap-1.5"
-        >
-          <Pencil className="h-4 w-4" />
-          Update my emotion
-        </Button>
-      </div>
-      
-      <div className="h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-        <Timeline items={timelineItems} />
-      </div>
+        <TabsContent value="timeline" className="mt-0">
+          <div className="h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+            <Timeline items={timelineItems} />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="map" className="mt-0">
+          <div className="space-y-4">
+            <Map 
+              locations={mapLocations}
+              height={300}
+              isLoading={isLoading}
+            />
+          </div>
+        </TabsContent>
+      </Tabs>
     </DataCard>
   );
 };
