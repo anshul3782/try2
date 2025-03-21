@@ -116,9 +116,9 @@ const DashboardLayout = ({ children, className }: DashboardLayoutProps) => {
           <div className="border-b py-4 px-5">
             <div className="flex items-center gap-2">
               <div className="bg-primary/10 text-primary rounded-lg p-1">
-                <Activity className="h-6 w-6" />
+                <Map className="h-6 w-6" />
               </div>
-              <h2 className="font-semibold text-lg">Life Dashboard</h2>
+              <h2 className="font-semibold text-lg">City-Mood</h2>
             </div>
           </div>
           

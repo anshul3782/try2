@@ -3,6 +3,32 @@ import { LocationData } from '@/components/Dashboard/LocationTimeline';
 import { SocialPost } from '@/components/Dashboard/SocialFeed';
 import { Friend } from '@/context/DashboardContext';
 
+interface ActivityData {
+  date: string;
+  steps: number;
+  calories: number;
+  sleep: number;
+  activeMinutes: number;
+}
+
+interface ReportData {
+  title: string;
+  period: string;
+  timestamp: string;
+  summary: string;
+  highlights: Array<{
+    type: string;
+    title: string;
+    description: string;
+  }>;
+  stats: {
+    socialInteractions: number;
+    events: number;
+    locations: number;
+    sentiment: number;
+  };
+}
+
 // Mock function to fetch friends data
 export const fetchFriendsData = async (): Promise<Friend[]> => {
   return new Promise((resolve) => {
@@ -36,7 +62,7 @@ export const fetchFriendsData = async (): Promise<Friend[]> => {
           id: 'lena',
           name: 'Lena',
           location: 'Queens, New York',
-          currentEmotion: 'tired',
+          currentEmotion: 'neutral',
           emotionIntensity: 0.7,
           description: 'Long shift at the hospital, need some rest'
         }
