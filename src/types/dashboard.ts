@@ -1,4 +1,3 @@
-
 // Define the ActivityData interface
 export interface ActivityData {
   id: string;
@@ -6,11 +5,11 @@ export interface ActivityData {
   duration: string;
   caloriesBurned: number;
   timestamp: string;
-  date?: string;
-  steps?: number;
-  calories?: number;
-  sleep?: number;
-  activeMinutes?: number;
+  date: string;
+  steps: number;
+  calories: number;
+  sleep: number;
+  activeMinutes: number;
 }
 
 // Define the ReportData interface

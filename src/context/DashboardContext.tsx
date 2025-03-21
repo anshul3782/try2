@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { SocialPost } from '@/components/Dashboard/SocialFeed';
-import { LocationData } from '@/components/Dashboard/LocationTimeline';
-import { ActivityData, ReportData } from '@/types/dashboard';
+import { ActivityData, ReportData, SocialPost, LocationData } from '@/types/dashboard';
 import { 
   fetchSocialData, 
   fetchLocationData, 

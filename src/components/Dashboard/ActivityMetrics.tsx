@@ -1,18 +1,10 @@
-
 import React from 'react';
 import DataCard from '@/components/UI/DataCard';
 import BarChart, { BarChartData } from '@/components/UI/BarChart';
 import { Progress } from "@/components/ui/progress";
 import { Heart, Activity, BedDouble, Footprints } from "lucide-react";
 import { cn } from '@/lib/utils';
-
-export interface ActivityData {
-  date: string;
-  steps: number;
-  calories: number;
-  sleep: number;
-  activeMinutes: number;
-}
+import { ActivityData } from '@/types/dashboard';
 
 interface ActivityGoals {
   steps: number;
