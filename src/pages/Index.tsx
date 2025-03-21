@@ -6,7 +6,8 @@ import DashboardHeader from '@/components/Dashboard/DashboardHeader';
 import SentimentAnalysis from '@/components/Dashboard/SentimentAnalysis';
 import LocationTimeline from '@/components/Dashboard/LocationTimeline';
 import { Button } from "@/components/ui/button";
-import { MapPin, RefreshCw, PlusCircle } from "lucide-react";
+import { MapPin, RefreshCw, PlusCircle, Users } from "lucide-react";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   const {
@@ -16,35 +17,63 @@ const Dashboard = () => {
     isSentimentLoading,
     activePeriod,
     setActivePeriod,
-    refreshData
+    refreshData,
+    currentFriend
   } = useDashboard();
 
   const handleRefresh = async () => {
     await refreshData();
+    toast.success("Data refreshed successfully");
   };
 
-  const handleTimeRangeChange = (range: string) => {
-    setActivePeriod(range);
+  const handleFriendChange = (friend: string) => {
+    setActivePeriod(friend);
+  };
+
+  const handleAddLocation = () => {
+    toast.success("Location added", {
+      description: "Your current location has been recorded"
+    });
+  };
+
+  const getEmotionEmoji = (emotion: string) => {
+    switch(emotion) {
+      case 'happy': return '😊';
+      case 'sad': return '😢';
+      case 'angry': return '😠';
+      case 'surprised': return '😮';
+      case 'scared': return '😨';
+      case 'neutral': return '😐';
+      default: return '😐';
+    }
   };
 
   return (
     <>
       <DashboardHeader
-        title="Emotion Map"
+        title="City-Mood"
         subtitle="Track your locations and feelings throughout the day"
-        onTimeRangeChange={handleTimeRangeChange}
+        onTimeRangeChange={handleFriendChange}
       />
 
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-2">
-          <MapPin className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-medium">Your Emotional Journey</h2>
+        <div className="flex items-center gap-3">
+          <div className="text-3xl">
+            {currentFriend && getEmotionEmoji(currentFriend.currentEmotion)}
+          </div>
+          <div>
+            <h2 className="text-xl font-medium">{currentFriend?.name}'s Journey</h2>
+            <p className="text-sm text-muted-foreground">
+              Currently in {currentFriend?.location} • {currentFriend?.description}
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
             className="flex items-center gap-2"
+            onClick={handleAddLocation}
           >
             <PlusCircle className="h-4 w-4" />
             <span>Add Location</span>
@@ -72,6 +101,7 @@ const Dashboard = () => {
         <SentimentAnalysis 
           data={sentimentData} 
           isLoading={isSentimentLoading} 
+          friend={currentFriend}
         />
       </div>
     </>
