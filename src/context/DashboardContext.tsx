@@ -25,6 +25,7 @@ export interface Friend {
   currentEmotion: 'happy' | 'sad' | 'angry' | 'surprised' | 'scared' | 'neutral';
   emotionIntensity: number;
   description: string;
+  avatar?: string;
 }
 
 interface DashboardContextType {
