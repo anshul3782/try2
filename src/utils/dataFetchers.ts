@@ -47,7 +47,6 @@ export const fetchFriendsData = async (): Promise<Friend[]> => {
 
 // Mock function to fetch social media data
 export const fetchSocialData = async (): Promise<SocialPost[]> => {
-  // In a real app, you would fetch this from APIs
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve([
@@ -277,7 +276,7 @@ export const fetchLocationData = (friendId: string = 'arnav'): Promise<LocationD
             id: '4',
             name: 'Lunch Meeting',
             type: 'food',
-            address: 'Delmonico's, Manhattan',
+            address: 'Delmonico\'s, Manhattan',
             time: '1:30 PM',
             duration: '1.5 hours',
             coordinates: { lat: 40.7045, lng: -74.0101 },
@@ -449,7 +448,6 @@ export const fetchLocationData = (friendId: string = 'arnav'): Promise<LocationD
           }
         ]);
       } else {
-        // Default fallback
         resolve([]);
       }
     }, 800);
@@ -458,7 +456,6 @@ export const fetchLocationData = (friendId: string = 'arnav'): Promise<LocationD
 
 // Mock function to fetch activity data
 export const fetchActivityData = async (): Promise<ActivityData[]> => {
-  // In a real app, you would fetch this from fitness trackers/health APIs
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve([
@@ -617,7 +614,6 @@ export const fetchSentimentData = async (friendId = 'arnav'): Promise<any[]> => 
           }
         ]);
       } else {
-        // Default
         resolve([]);
       }
     }, 1500);
@@ -626,7 +622,6 @@ export const fetchSentimentData = async (friendId = 'arnav'): Promise<any[]> => 
 
 // Mock function to fetch life report
 export const fetchLifeReport = async (): Promise<ReportData> => {
-  // In a real app, this would be generated from all the collected data
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
