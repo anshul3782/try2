@@ -1,12 +1,8 @@
-
 import React from 'react';
 import DataCard from '@/components/UI/DataCard';
-import Map from '@/components/UI/Map';
 import Timeline, { TimelineItem } from '@/components/UI/Timeline';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { MapPin, Building, Home, ShoppingBag, Coffee, Car, Calendar, 
-         Smile, Frown, Angry, BookOpen, Stethoscope, HeartPulse, TreePine } from "lucide-react";
+import { Calendar, Pencil } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { toast } from "sonner";
 
@@ -33,20 +29,10 @@ interface LocationTimelineProps {
   locations: LocationData[];
   isLoading?: boolean;
   className?: string;
+  onUpdateEmotion?: () => void;
 }
 
-const LocationTimeline = ({ locations = [], isLoading = false, className }: LocationTimelineProps) => {
-  // Convert locations to map format
-  const mapLocations = locations.map(location => ({
-    id: location.id,
-    lat: location.coordinates.lat,
-    lng: location.coordinates.lng,
-    title: location.name,
-    description: location.address,
-    color: getLocationColor(location),
-    size: getLocationSize(location)
-  }));
-  
+const LocationTimeline = ({ locations = [], isLoading = false, className, onUpdateEmotion }: LocationTimelineProps) => {
   // Convert locations to timeline format
   const timelineItems: TimelineItem[] = locations.map(location => ({
     id: location.id,
@@ -115,14 +101,6 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
     }
   }
   
-  function getLocationSize(location: LocationData) {
-    // Make locations with stronger emotions larger
-    if (location.emotion) {
-      return 12 + (location.emotion.intensity * 8);
-    }
-    return 12;
-  }
-  
   function getLocationDescription(location: LocationData) {
     let description = '';
     
@@ -158,53 +136,35 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
     return description;
   }
   
-  const handleRecordEmotion = () => {
-    toast.success("Emotion recorded for your current location", {
-      description: "Your emotional state has been saved."
-    });
-  };
-  
   return (
     <DataCard 
-      title="Location & Emotion Timeline" 
-      description="Places you've been and how you felt"
+      title="Daily Timeline" 
+      description="Places visited and how it felt"
       className={cn("", className)}
       isLoading={isLoading}
       animation="fade"
       delay={200}
     >
-      <Tabs defaultValue="timeline">
-        <div className="flex items-center justify-between mb-4">
-          <TabsList>
-            <TabsTrigger value="timeline" className="flex items-center gap-1.5">
-              <Calendar className="h-4 w-4" />
-              <span>Timeline</span>
-            </TabsTrigger>
-            <TabsTrigger value="map" className="flex items-center gap-1.5">
-              <MapPin className="h-4 w-4" />
-              <span>Emotional Map</span>
-            </TabsTrigger>
-          </TabsList>
-          
-          <Button variant="outline" size="sm" onClick={handleRecordEmotion}>Record emotion</Button>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+          <Calendar className="h-4 w-4" />
+          <span>Today</span>
         </div>
         
-        <TabsContent value="timeline" className="mt-0">
-          <div className="h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-            <Timeline items={timelineItems} />
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="map" className="mt-0">
-          <div className="space-y-4">
-            <Map 
-              locations={mapLocations}
-              height={300}
-              isLoading={isLoading}
-            />
-          </div>
-        </TabsContent>
-      </Tabs>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={onUpdateEmotion}
+          className="flex items-center gap-1.5"
+        >
+          <Pencil className="h-4 w-4" />
+          Update emotion
+        </Button>
+      </div>
+      
+      <div className="h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+        <Timeline items={timelineItems} />
+      </div>
     </DataCard>
   );
 };

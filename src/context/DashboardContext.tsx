@@ -1,9 +1,6 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { SocialPost } from '@/components/Dashboard/SocialFeed';
 import { LocationData } from '@/components/Dashboard/LocationTimeline';
-import { ActivityData } from '@/components/Dashboard/ActivityMetrics';
-import { ReportData } from '@/components/Dashboard/LifeReport';
 import { 
   fetchSocialData, 
   fetchLocationData, 
@@ -11,7 +8,8 @@ import {
   fetchSentimentData,
   fetchLifeReport,
   fetchPrivacySettings,
-  fetchFriendsData
+  fetchFriendsData,
+  updateFriendEmotion
 } from '@/utils/dataFetchers';
 import { 
   processLifeData, 
@@ -55,6 +53,14 @@ interface DashboardContextType {
   // Utility methods
   refreshData: () => Promise<void>;
   generateDailySummary: (date: Date) => string;
+  
+  // New updateEmotion function
+  updateEmotion: (
+    friendId: string, 
+    emotion: 'happy' | 'sad' | 'angry' | 'surprised' | 'scared' | 'neutral',
+    intensity: number,
+    comment: string
+  ) => Promise<boolean>;
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
@@ -201,6 +207,44 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     );
   };
   
+  // Add new updateEmotion function
+  const updateEmotionHandler = async (
+    friendId: string,
+    emotion: 'happy' | 'sad' | 'angry' | 'surprised' | 'scared' | 'neutral',
+    intensity: number,
+    comment: string
+  ): Promise<boolean> => {
+    try {
+      const success = await updateFriendEmotion(friendId, emotion, intensity, comment);
+      
+      if (success) {
+        // Update local friend state with new emotion
+        setFriends(prevFriends => 
+          prevFriends.map(friend => 
+            friend.id === friendId 
+              ? { ...friend, currentEmotion: emotion, emotionIntensity: intensity, description: comment } 
+              : friend
+          )
+        );
+        
+        // If the current friend is the one being updated, update currentFriend state as well
+        if (currentFriend && currentFriend.id === friendId) {
+          setCurrentFriend({
+            ...currentFriend,
+            currentEmotion: emotion,
+            emotionIntensity: intensity,
+            description: comment
+          });
+        }
+      }
+      
+      return success;
+    } catch (error) {
+      console.error('Error updating emotion:', error);
+      return false;
+    }
+  };
+  
   const value = {
     // Data states
     socialPosts,
@@ -227,7 +271,10 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     
     // Utility methods
     refreshData,
-    generateDailySummary: generateDailySummaryForDate
+    generateDailySummary: generateDailySummaryForDate,
+    
+    // New updateEmotion function
+    updateEmotion: updateEmotionHandler
   };
   
   return (

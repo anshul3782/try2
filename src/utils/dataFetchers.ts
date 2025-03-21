@@ -3,6 +3,32 @@ import { LocationData } from '@/components/Dashboard/LocationTimeline';
 import { SocialPost } from '@/components/Dashboard/SocialFeed';
 import { Friend } from '@/context/DashboardContext';
 
+export interface ActivityData {
+  date: string;
+  steps: number;
+  calories: number;
+  sleep: number;
+  activeMinutes: number;
+}
+
+export interface ReportData {
+  title: string;
+  period: string;
+  timestamp: string;
+  summary: string;
+  highlights: Array<{
+    type: string;
+    title: string;
+    description: string;
+  }>;
+  stats: {
+    socialInteractions: number;
+    events: number;
+    locations: number;
+    sentiment: number;
+  };
+}
+
 export const fetchFriendsData = async (): Promise<Friend[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -21,7 +47,7 @@ export const fetchFriendsData = async (): Promise<Friend[]> => {
           location: 'Manhattan, New York',
           currentEmotion: 'neutral',
           emotionIntensity: 0.5,
-          description: 'Busy day at work, looking forward to the weekend'
+          description: 'Working on stock analysis, looking forward to my run'
         },
         {
           id: 'shahraan',
@@ -35,7 +61,7 @@ export const fetchFriendsData = async (): Promise<Friend[]> => {
           id: 'lena',
           name: 'Lena',
           location: 'Queens, New York',
-          currentEmotion: 'tired',
+          currentEmotion: 'neutral',
           emotionIntensity: 0.7,
           description: 'Long shift at the hospital, need some rest'
         }
@@ -724,5 +750,19 @@ export const fetchPrivacySettings = async (): Promise<any[]> => {
         }
       ]);
     }, 1500);
+  });
+};
+
+export const updateFriendEmotion = async (
+  friendId: string, 
+  emotion: 'happy' | 'sad' | 'angry' | 'surprised' | 'scared' | 'neutral',
+  intensity: number,
+  comment: string
+): Promise<boolean> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log(`Updated ${friendId}'s emotion to ${emotion} (${intensity}) - "${comment}"`);
+      resolve(true);
+    }, 500);
   });
 };
