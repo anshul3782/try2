@@ -3,7 +3,6 @@ import { LocationData } from '@/components/Dashboard/LocationTimeline';
 import { SocialPost } from '@/components/Dashboard/SocialFeed';
 import { Friend } from '@/context/DashboardContext';
 
-// Mock function to fetch friends data
 export const fetchFriendsData = async (): Promise<Friend[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -45,7 +44,6 @@ export const fetchFriendsData = async (): Promise<Friend[]> => {
   });
 };
 
-// Mock function to fetch social media data
 export const fetchSocialData = async (): Promise<SocialPost[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -150,11 +148,9 @@ export const fetchSocialData = async (): Promise<SocialPost[]> => {
   });
 };
 
-// Mock function to fetch location data - updated to be friend-specific
 export const fetchLocationData = (friendId: string = 'arnav'): Promise<LocationData[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      // Different location data for each friend
       if (friendId === 'arnav') {
         resolve([
           {
@@ -434,7 +430,7 @@ export const fetchLocationData = (friendId: string = 'arnav'): Promise<LocationD
           },
           {
             id: '5',
-1 name: 'Patient Rounds',
+            name: 'Patient Rounds',
             type: 'hospital',
             address: 'NY Presbyterian, Manhattan',
             time: '1:30 PM',
@@ -448,14 +444,12 @@ export const fetchLocationData = (friendId: string = 'arnav'): Promise<LocationD
           }
         ]);
       } else {
-        // Default fallback
         resolve([]);
       }
     }, 800);
   });
 };
 
-// Mock function to fetch activity data
 export const fetchActivityData = async (): Promise<ActivityData[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -514,7 +508,6 @@ export const fetchActivityData = async (): Promise<ActivityData[]> => {
   });
 };
 
-// Mock function to fetch sentiment data - updated to be friend-specific
 export const fetchSentimentData = async (friendId = 'arnav'): Promise<any[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -615,14 +608,12 @@ export const fetchSentimentData = async (friendId = 'arnav'): Promise<any[]> => 
           }
         ]);
       } else {
-        // Default
         resolve([]);
       }
     }, 1500);
   });
 };
 
-// Mock function to fetch life report
 export const fetchLifeReport = async (): Promise<ReportData> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -664,7 +655,6 @@ export const fetchLifeReport = async (): Promise<ReportData> => {
   });
 };
 
-// Mock function to fetch privacy settings
 export const fetchPrivacySettings = async (): Promise<any[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
