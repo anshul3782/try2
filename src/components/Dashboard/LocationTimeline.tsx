@@ -1,8 +1,25 @@
+
 import React from 'react';
 import DataCard from '@/components/UI/DataCard';
 import Timeline, { TimelineItem } from '@/components/UI/Timeline';
 import { Button } from "@/components/ui/button";
-import { Calendar, Pencil } from "lucide-react";
+import { 
+  Calendar, 
+  Pencil, 
+  Smile, 
+  Frown, 
+  Angry, 
+  HeartPulse, 
+  MapPin,
+  Home,
+  Building,
+  ShoppingBag,
+  Coffee,
+  Car,
+  TreePine,
+  BookOpen,
+  Stethoscope
+} from "lucide-react";
 import { cn } from '@/lib/utils';
 import { toast } from "sonner";
 
