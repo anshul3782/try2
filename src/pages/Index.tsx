@@ -136,7 +136,7 @@ const Dashboard = () => {
                   onClick={() => setIsEmotionModalOpen(true)}
                 >
                   <Edit className="h-4 w-4 mr-2" />
-                  Update emotion
+                  Update my emotion
                 </Button>
                 <Button 
                   variant="outline" 

@@ -175,11 +175,11 @@ const LocationTimeline = ({ locations = [], isLoading = false, className, onUpda
           className="flex items-center gap-1.5"
         >
           <Pencil className="h-4 w-4" />
-          Update emotion
+          Update my emotion
         </Button>
       </div>
       
-      <div className="h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+      <div className="h-[600px] overflow-y-auto pr-2 custom-scrollbar">
         <Timeline items={timelineItems} />
       </div>
     </DataCard>

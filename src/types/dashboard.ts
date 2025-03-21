@@ -47,3 +47,23 @@ export interface SocialPost {
   };
   platform: string;
 }
+
+// Define LocationData interface
+export interface LocationData {
+  id: string;
+  name: string;
+  type: 'home' | 'work' | 'shopping' | 'food' | 'transit' | 'park' | 'other' | 'school' | 'hospital';
+  address?: string;
+  time: string;
+  duration?: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  sentimentScore?: number;
+  emotion?: {
+    primary: 'happy' | 'sad' | 'angry' | 'surprised' | 'scared' | 'neutral';
+    intensity: number; // 0-1
+    note?: string;
+  };
+}

@@ -67,7 +67,7 @@ const UpdateEmotionModal: React.FC<UpdateEmotionModalProps> = ({
       );
       
       if (success) {
-        toast.success(`Updated ${friendName}'s emotion`, {
+        toast.success(`Updated your emotion`, {
           description: `New emotion: ${values.emotion} - "${values.comment}"`
         });
         onClose();
@@ -104,9 +104,9 @@ const UpdateEmotionModal: React.FC<UpdateEmotionModalProps> = ({
     <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Update {friendName}'s Mood</DialogTitle>
+          <DialogTitle>Update Your Mood</DialogTitle>
           <DialogDescription>
-            How is {friendName} feeling right now?
+            How are you feeling right now?
           </DialogDescription>
         </DialogHeader>
         
@@ -117,7 +117,7 @@ const UpdateEmotionModal: React.FC<UpdateEmotionModalProps> = ({
               name="emotion"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>What's the emotion?</FormLabel>
+                  <FormLabel>What's your emotion?</FormLabel>
                   <div className="grid grid-cols-3 gap-3 pt-2">
                     {emotionOptions.map(emotion => (
                       <div 
@@ -166,10 +166,10 @@ const UpdateEmotionModal: React.FC<UpdateEmotionModalProps> = ({
               name="comment"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>What's on {friendName}'s mind?</FormLabel>
+                  <FormLabel>What's on your mind?</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder={`What is ${friendName} thinking or feeling?`}
+                      placeholder="What are you thinking or feeling?"
                       className="resize-none"
                       {...field}
                     />
@@ -181,7 +181,7 @@ const UpdateEmotionModal: React.FC<UpdateEmotionModalProps> = ({
             
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-              <Button type="submit">Update Mood</Button>
+              <Button type="submit">Update My Mood</Button>
             </DialogFooter>
           </form>
         </Form>
