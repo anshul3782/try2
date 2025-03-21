@@ -20,6 +20,11 @@ export interface LocationData {
     lng: number;
   };
   sentimentScore?: number;
+  emotion?: {
+    primary: 'joy' | 'sadness' | 'anger' | 'surprise' | 'fear' | 'neutral';
+    intensity: number; // 0-1
+    note?: string;
+  };
 }
 
 interface LocationTimelineProps {
@@ -36,8 +41,8 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
     lng: location.coordinates.lng,
     title: location.name,
     description: location.address,
-    color: getLocationTypeColor(location.type),
-    size: 12
+    color: getLocationColor(location),
+    size: getLocationSize(location)
   }));
   
   // Convert locations to timeline format
@@ -45,9 +50,9 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
     id: location.id,
     time: location.time,
     title: location.name,
-    description: location.address ? `${location.address}${location.duration ? ` · ${location.duration}` : ''}` : location.duration,
+    description: getLocationDescription(location),
     icon: getLocationTypeIcon(location.type),
-    color: getLocationTypeColor(location.type)
+    color: getLocationColor(location)
   }));
   
   function getLocationTypeIcon(type: LocationData['type']) {
@@ -61,9 +66,22 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
     }
   }
   
-  function getLocationTypeColor(type: LocationData['type']) {
-    switch (type) {
-      case 'home': return 'hsl(var(--sentiment-positive))';
+  function getLocationColor(location: LocationData) {
+    // If the location has emotion data, use that for coloring
+    if (location.emotion) {
+      switch (location.emotion.primary) {
+        case 'joy': return 'hsl(var(--sentiment-positive))';
+        case 'sadness': return 'hsl(200, 70%, 60%)';
+        case 'anger': return 'hsl(var(--sentiment-negative))';
+        case 'surprise': return 'hsl(275, 80%, 60%)';
+        case 'fear': return 'hsl(310, 70%, 50%)';
+        case 'neutral': return 'hsl(var(--sentiment-neutral))';
+      }
+    }
+    
+    // Fallback to location type coloring
+    switch (location.type) {
+      case 'home': return 'hsl(120, 60%, 50%)';
       case 'work': return 'hsl(var(--primary))';
       case 'shopping': return 'hsl(var(--sentiment-neutral))';
       case 'food': return 'hsl(330, 80%, 60%)';
@@ -72,10 +90,53 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
     }
   }
   
+  function getLocationSize(location: LocationData) {
+    // Make locations with stronger emotions larger
+    if (location.emotion) {
+      return 12 + (location.emotion.intensity * 8);
+    }
+    return 12;
+  }
+  
+  function getLocationDescription(location: LocationData) {
+    let description = '';
+    
+    if (location.address) {
+      description += location.address;
+    }
+    
+    if (location.duration) {
+      description += description ? ` · ${location.duration}` : location.duration;
+    }
+    
+    if (location.emotion) {
+      const emotions = {
+        joy: 'Happy 😊',
+        sadness: 'Sad 😢',
+        anger: 'Angry 😠',
+        surprise: 'Surprised 😮',
+        fear: 'Anxious 😨',
+        neutral: 'Neutral 😐'
+      };
+      
+      const emotionText = emotions[location.emotion.primary];
+      const intensity = location.emotion.intensity >= 0.7 ? 'Very ' : 
+                        location.emotion.intensity >= 0.4 ? 'Moderately ' : 'Slightly ';
+      
+      description += description ? ` · ${intensity}${emotionText}` : `${intensity}${emotionText}`;
+      
+      if (location.emotion.note) {
+        description += ` - "${location.emotion.note}"`;
+      }
+    }
+    
+    return description;
+  }
+  
   return (
     <DataCard 
-      title="Location Timeline" 
-      description="Where you've been today"
+      title="Location & Emotion Timeline" 
+      description="Places you've been and how you felt"
       className={cn("", className)}
       isLoading={isLoading}
       animation="fade"
@@ -86,7 +147,7 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
           <TabsList>
             <TabsTrigger value="map" className="flex items-center gap-1.5">
               <MapPin className="h-4 w-4" />
-              <span>Map</span>
+              <span>Emotional Map</span>
             </TabsTrigger>
             <TabsTrigger value="timeline" className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
@@ -94,7 +155,7 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
             </TabsTrigger>
           </TabsList>
           
-          <Button variant="outline" size="sm">View all locations</Button>
+          <Button variant="outline" size="sm">Record emotion</Button>
         </div>
         
         <TabsContent value="map" className="mt-0">
