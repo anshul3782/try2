@@ -6,8 +6,7 @@ import DashboardHeader from '@/components/Dashboard/DashboardHeader';
 import SentimentAnalysis from '@/components/Dashboard/SentimentAnalysis';
 import LocationTimeline from '@/components/Dashboard/LocationTimeline';
 import { Button } from "@/components/ui/button";
-import { MapPin, RefreshCw, PlusCircle, Users } from "lucide-react";
-import { toast } from "sonner";
+import { MapPin, RefreshCw, PlusCircle } from "lucide-react";
 
 const Dashboard = () => {
   const {
@@ -17,44 +16,35 @@ const Dashboard = () => {
     isSentimentLoading,
     activePeriod,
     setActivePeriod,
-    refreshData,
-    currentFriend
+    refreshData
   } = useDashboard();
 
   const handleRefresh = async () => {
     await refreshData();
-    toast.success("Data refreshed successfully");
   };
 
-  const handleFriendChange = (friend: string) => {
-    setActivePeriod(friend);
-  };
-
-  const handleAddLocation = () => {
-    toast.success("Location added", {
-      description: "Your current location has been recorded"
-    });
+  const handleTimeRangeChange = (range: string) => {
+    setActivePeriod(range);
   };
 
   return (
     <>
       <DashboardHeader
-        title="City-Mood"
+        title="Emotion Map"
         subtitle="Track your locations and feelings throughout the day"
-        onTimeRangeChange={handleFriendChange}
+        onTimeRangeChange={handleTimeRangeChange}
       />
 
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-2">
-          <Users className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-medium">{currentFriend?.name}'s Journey</h2>
+          <MapPin className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-medium">Your Emotional Journey</h2>
         </div>
         <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
             className="flex items-center gap-2"
-            onClick={handleAddLocation}
           >
             <PlusCircle className="h-4 w-4" />
             <span>Add Location</span>
@@ -82,7 +72,6 @@ const Dashboard = () => {
         <SentimentAnalysis 
           data={sentimentData} 
           isLoading={isSentimentLoading} 
-          friend={currentFriend}
         />
       </div>
     </>

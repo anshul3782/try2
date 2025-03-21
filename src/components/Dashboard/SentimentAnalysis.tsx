@@ -1,19 +1,19 @@
 
 import React from 'react';
 import DataCard from '@/components/UI/DataCard';
+import LineChart, { LineChartData } from '@/components/UI/LineChart';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Smile, Frown, Angry, Heart, Info, MapIcon } from "lucide-react";
+import { InfoIcon, ArrowUpIcon, ArrowDownIcon, TrendingUpIcon, Smile, Meh, Frown, MapPin } from "lucide-react";
 import { cn } from '@/lib/utils';
 
 export interface SentimentData {
   period: string;
-  happy: number;
+  positive: number;
   neutral: number;
-  sad: number;
-  angry: number;
+  negative: number;
   overall: number; // -1 to 1
-  primaryEmotion?: 'happy' | 'sad' | 'angry' | 'surprised' | 'scared' | 'neutral';
+  primaryEmotion?: 'joy' | 'sadness' | 'anger' | 'surprise' | 'fear' | 'neutral';
   locationCorrelation?: {
     type: string;
     name: string;
@@ -21,23 +21,13 @@ export interface SentimentData {
   }[];
 }
 
-interface Friend {
-  id: string;
-  name: string;
-  location: string;
-  currentEmotion: 'happy' | 'sad' | 'angry' | 'surprised' | 'scared' | 'neutral';
-  emotionIntensity: number;
-  description: string;
-}
-
 interface SentimentAnalysisProps {
   data: SentimentData[];
   isLoading?: boolean;
   className?: string;
-  friend?: Friend;
 }
 
-const SentimentAnalysis = ({ data = [], isLoading = false, className, friend }: SentimentAnalysisProps) => {
+const SentimentAnalysis = ({ data = [], isLoading = false, className }: SentimentAnalysisProps) => {
   // Calculate overall sentiment score from the latest data point
   const latestSentiment = data.length > 0 ? data[data.length - 1] : null;
   
@@ -47,72 +37,92 @@ const SentimentAnalysis = ({ data = [], isLoading = false, className, friend }: 
     ? latestSentiment.overall - previousSentiment.overall
     : 0;
   
-  const getEmotionLabel = (emotion: string, intensity: number) => {
-    const intensityLabel = intensity >= 0.7 ? "Very " : 
-                           intensity >= 0.4 ? "Moderately " : "Slightly ";
-    
-    const emotionMap: Record<string, string> = {
-      'happy': 'Happy 😊',
-      'sad': 'Sad 😢',
-      'angry': 'Angry 😠',
-      'surprised': 'Surprised 😮',
-      'scared': 'Anxious 😨',
-      'neutral': 'Neutral 😐'
-    };
-    
-    return `${intensityLabel}${emotionMap[emotion] || 'Neutral 😐'}`;
+  const getSentimentLabel = (score: number) => {
+    if (score >= 0.2) return "Very Positive";
+    if (score >= 0.05) return "Positive";
+    if (score > -0.05) return "Neutral";
+    if (score > -0.2) return "Negative";
+    return "Very Negative";
   };
   
-  const getEmotionIcon = (emotion: string) => {
-    switch (emotion) {
-      case 'happy': return <Smile className="h-10 w-10 text-sentiment-positive" />;
-      case 'sad': return <Frown className="h-10 w-10 text-blue-400" />;
-      case 'angry': return <Angry className="h-10 w-10 text-sentiment-negative" />;
-      default: return <Smile className="h-10 w-10 text-sentiment-neutral" />;
-    }
+  const getSentimentIcon = (score: number) => {
+    if (score >= 0.05) return <Smile className="h-5 w-5 text-sentiment-positive" />;
+    if (score > -0.05) return <Meh className="h-5 w-5 text-sentiment-neutral" />;
+    return <Frown className="h-5 w-5 text-sentiment-negative" />;
   };
+  
+  // Convert SentimentData to LineChartData
+  const chartData: LineChartData[] = data.map(item => ({
+    name: item.period,
+    positive: item.positive,
+    neutral: item.neutral,
+    negative: item.negative
+  }));
 
   // Find top correlated location
   const topLocation = latestSentiment?.locationCorrelation?.sort((a, b) => b.score - a.score)[0];
   
   return (
     <DataCard 
-      title="Current Mood" 
-      description={friend ? `How ${friend.name} feels right now` : "How different places affect your mood"}
+      title="Emotional Insights" 
+      description="How different places affect your mood"
       className={cn("", className)}
       isLoading={isLoading}
       animation="fade"
       delay={100}
     >
       <div className="space-y-6">
-        {friend && (
-          <div className="flex items-start gap-4 pb-3 border-b">
-            <div className="mt-1">
-              {getEmotionIcon(friend.currentEmotion)}
+        {latestSentiment && (
+          <div className="flex items-center justify-between pb-2 border-b">
+            <div className="flex items-center gap-2">
+              {getSentimentIcon(latestSentiment.overall)}
+              <div>
+                <div className="text-lg font-medium">
+                  {getSentimentLabel(latestSentiment.overall)}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Overall emotional state
+                </div>
+              </div>
             </div>
-            <div className="flex-1">
-              <div className="text-lg font-medium">
-                {getEmotionLabel(friend.currentEmotion, friend.emotionIntensity)}
+            
+            <div className="flex flex-col items-end">
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-medium">
+                  {(latestSentiment.overall * 100).toFixed(1)}%
+                </span>
+                
+                {sentimentChange !== 0 && (
+                  <Badge 
+                    variant="outline" 
+                    className={cn(
+                      "text-xs flex items-center gap-0.5",
+                      sentimentChange > 0 ? "text-green-500" : "text-red-500"
+                    )}
+                  >
+                    {sentimentChange > 0 ? (
+                      <ArrowUpIcon className="h-3 w-3" />
+                    ) : (
+                      <ArrowDownIcon className="h-3 w-3" />
+                    )}
+                    {Math.abs(sentimentChange * 100).toFixed(1)}%
+                  </Badge>
+                )}
               </div>
-              <div className="text-sm text-muted-foreground mt-1">
-                {friend.description}
-              </div>
-              <div className="flex items-center gap-1.5 mt-3 text-sm text-muted-foreground">
-                <MapPin className="h-3.5 w-3.5" />
-                <span>{friend.location}</span>
+              <div className="text-xs text-muted-foreground">
+                {previousSentiment ? `vs ${previousSentiment.period}` : 'Current mood'}
               </div>
             </div>
           </div>
         )}
         
-        {/* Location correlation insight */}
+        {/* Location correlation insight - NEW SECTION */}
         {topLocation && (
           <div className="flex items-start gap-3 p-3 rounded-md bg-primary/5 border border-primary/20">
             <MapPin className="h-5 w-5 mt-0.5 text-primary" />
             <div>
               <div className="text-sm font-medium">
-                {friend ? `${friend.name}'s mood tends to improve at ${topLocation.name}` : 
-                  `Your mood tends to improve at ${topLocation.name}`}
+                Your mood tends to improve at {topLocation.name}
               </div>
               <div className="text-xs text-muted-foreground">
                 Visiting {topLocation.type} locations correlates with {Math.round(topLocation.score * 100)}% more positive emotions
@@ -121,45 +131,40 @@ const SentimentAnalysis = ({ data = [], isLoading = false, className, friend }: 
           </div>
         )}
         
-        {/* Daily emotion summary tiles */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-          <div className="flex items-center p-3 rounded-md bg-sentiment-positive/10 border border-sentiment-positive/20">
-            <Smile className="h-8 w-8 mr-3 text-sentiment-positive" />
-            <div>
-              <div className="text-xs text-muted-foreground">Happy</div>
-              <div className="text-lg font-semibold">
-                {latestSentiment ? `${(latestSentiment.happy * 100).toFixed(0)}%` : '--'}
-              </div>
+        <div className="h-64">
+          <LineChart
+            data={chartData}
+            xAxisDataKey="name"
+            lines={[
+              { dataKey: 'positive', name: 'Positive', color: 'hsl(var(--sentiment-positive))' },
+              { dataKey: 'neutral', name: 'Neutral', color: 'hsl(var(--sentiment-neutral))' },
+              { dataKey: 'negative', name: 'Negative', color: 'hsl(var(--sentiment-negative))' }
+            ]}
+          />
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="flex flex-col items-center justify-center p-3 rounded-md bg-sentiment-positive/10 border border-sentiment-positive/20">
+            <Smile className="h-5 w-5 mb-1 text-sentiment-positive" />
+            <div className="text-sm font-medium">Positive</div>
+            <div className="text-xl font-semibold">
+              {latestSentiment ? `${(latestSentiment.positive * 100).toFixed(0)}%` : '--'}
             </div>
           </div>
           
-          <div className="flex items-center p-3 rounded-md bg-blue-100 border border-blue-200">
-            <Frown className="h-8 w-8 mr-3 text-blue-500" />
-            <div>
-              <div className="text-xs text-muted-foreground">Sad</div>
-              <div className="text-lg font-semibold">
-                {latestSentiment ? `${(latestSentiment.sad * 100).toFixed(0)}%` : '--'}
-              </div>
+          <div className="flex flex-col items-center justify-center p-3 rounded-md bg-sentiment-neutral/10 border border-sentiment-neutral/20">
+            <Meh className="h-5 w-5 mb-1 text-sentiment-neutral" />
+            <div className="text-sm font-medium">Neutral</div>
+            <div className="text-xl font-semibold">
+              {latestSentiment ? `${(latestSentiment.neutral * 100).toFixed(0)}%` : '--'}
             </div>
           </div>
           
-          <div className="flex items-center p-3 rounded-md bg-sentiment-negative/10 border border-sentiment-negative/20">
-            <Angry className="h-8 w-8 mr-3 text-sentiment-negative" />
-            <div>
-              <div className="text-xs text-muted-foreground">Angry</div>
-              <div className="text-lg font-semibold">
-                {latestSentiment ? `${(latestSentiment.angry * 100).toFixed(0)}%` : '--'}
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex items-center p-3 rounded-md bg-sentiment-neutral/10 border border-sentiment-neutral/20">
-            <MapPin className="h-8 w-8 mr-3 text-primary" />
-            <div>
-              <div className="text-xs text-muted-foreground">Places</div>
-              <div className="text-lg font-semibold">
-                {friend ? '5 today' : '11 today'}
-              </div>
+          <div className="flex flex-col items-center justify-center p-3 rounded-md bg-sentiment-negative/10 border border-sentiment-negative/20">
+            <Frown className="h-5 w-5 mb-1 text-sentiment-negative" />
+            <div className="text-sm font-medium">Negative</div>
+            <div className="text-xl font-semibold">
+              {latestSentiment ? `${(latestSentiment.negative * 100).toFixed(0)}%` : '--'}
             </div>
           </div>
         </div>
@@ -171,8 +176,8 @@ const SentimentAnalysis = ({ data = [], isLoading = false, className, friend }: 
           </Button>
           
           <Button variant="ghost" size="sm" className="text-xs">
-            <Info className="h-3.5 w-3.5 mr-1.5" />
-            Get insights
+            <TrendingUpIcon className="h-3.5 w-3.5 mr-1.5" />
+            View trends
           </Button>
         </div>
       </div>

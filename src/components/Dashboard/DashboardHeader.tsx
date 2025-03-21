@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Search, Bell, Calendar, Settings, User, Users } from "lucide-react";
+import { Search, Bell, Calendar, Settings, User } from "lucide-react";
 
 interface DashboardHeaderProps {
   title: string;
@@ -31,7 +31,7 @@ const DashboardHeader = ({
           <div className="flex items-center gap-2">
             <h1 className="text-3xl font-medium tracking-tight">{title}</h1>
             <Badge variant="outline" className="relative top-px hidden sm:inline-flex px-2.5 py-0.5 text-xs">
-              Beta
+              MVP Preview
             </Badge>
           </div>
           {subtitle && (
@@ -46,7 +46,7 @@ const DashboardHeader = ({
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search locations..."
+              placeholder="Search insights..."
               className="w-64 pl-8 rounded-full bg-background border-muted"
             />
           </div>
@@ -59,7 +59,7 @@ const DashboardHeader = ({
           </Button>
           
           <Button size="icon" variant="ghost">
-            <Users className="h-5 w-5" />
+            <Calendar className="h-5 w-5" />
           </Button>
           
           <Button size="icon" variant="ghost">
@@ -77,15 +77,15 @@ const DashboardHeader = ({
       
       {onTimeRangeChange && (
         <Tabs 
-          defaultValue="arnav" 
+          defaultValue="today" 
           className="w-full"
           onValueChange={onTimeRangeChange}
         >
           <TabsList className="grid grid-cols-4 sm:w-[400px]">
-            <TabsTrigger value="arnav">Arnav</TabsTrigger>
-            <TabsTrigger value="sheetal">Sheetal</TabsTrigger>
-            <TabsTrigger value="shahraan">Shahraan</TabsTrigger>
-            <TabsTrigger value="lena">Lena</TabsTrigger>
+            <TabsTrigger value="today">Today</TabsTrigger>
+            <TabsTrigger value="week">Week</TabsTrigger>
+            <TabsTrigger value="month">Month</TabsTrigger>
+            <TabsTrigger value="year">Year</TabsTrigger>
           </TabsList>
         </Tabs>
       )}

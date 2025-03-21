@@ -1,50 +1,8 @@
+
 import { SocialPost } from '@/components/Dashboard/SocialFeed';
 import { LocationData } from '@/components/Dashboard/LocationTimeline';
 import { ActivityData } from '@/components/Dashboard/ActivityMetrics';
 import { ReportData } from '@/components/Dashboard/LifeReport';
-import { Friend } from '@/context/DashboardContext';
-
-// Mock function to fetch friends data
-export const fetchFriendsData = async (): Promise<Friend[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        {
-          id: 'arnav',
-          name: 'Arnav',
-          location: 'ASU, Tempe',
-          currentEmotion: 'happy',
-          emotionIntensity: 0.8,
-          description: 'Feeling great after acing my computer science exam!'
-        },
-        {
-          id: 'sheetal',
-          name: 'Sheetal',
-          location: 'Manhattan, New York',
-          currentEmotion: 'neutral',
-          emotionIntensity: 0.5,
-          description: 'Busy day at work, looking forward to the weekend'
-        },
-        {
-          id: 'shahraan',
-          name: 'Shahraan',
-          location: 'Scarsdale, New York',
-          currentEmotion: 'happy',
-          emotionIntensity: 0.9,
-          description: 'Had a great day at school, excited for baseball practice!'
-        },
-        {
-          id: 'lena',
-          name: 'Lena',
-          location: 'Queens, New York',
-          currentEmotion: 'tired',
-          emotionIntensity: 0.7,
-          description: 'Long shift at the hospital, need some rest'
-        }
-      ]);
-    }, 1000);
-  });
-};
 
 // Mock function to fetch social media data
 export const fetchSocialData = async (): Promise<SocialPost[]> => {
@@ -152,464 +110,90 @@ export const fetchSocialData = async (): Promise<SocialPost[]> => {
   });
 };
 
-// Mock function to fetch location data - updated to be friend-specific
-export const fetchLocationData = async (friendId = 'arnav'): Promise<LocationData[]> => {
+// Mock function to fetch location data
+export const fetchLocationData = async (): Promise<LocationData[]> => {
+  // In a real app, you would fetch this from GPS/location APIs
   return new Promise((resolve) => {
     setTimeout(() => {
-      if (friendId === 'arnav') {
-        resolve([
-          {
-            id: '1',
-            name: 'Campus Dorm',
-            type: 'home',
-            address: 'ASU Tooker House, Tempe',
-            time: '7:00 AM',
-            duration: '45 minutes',
-            coordinates: {
-              lat: 33.4145,
-              lng: -111.9280
-            },
-            emotion: {
-              primary: 'neutral',
-              intensity: 0.3,
-              note: 'Just woke up, feeling a bit groggy but ready for class'
-            }
+      resolve([
+        {
+          id: '1',
+          name: 'Home',
+          type: 'home',
+          address: '123 Main St',
+          time: '7:00 AM',
+          duration: '1 hour',
+          coordinates: {
+            lat: 37.7749,
+            lng: -122.4194
           },
-          {
-            id: '2',
-            name: 'Campus Dining Hall',
-            type: 'food',
-            address: 'ASU Memorial Union, Tempe',
-            time: '8:00 AM',
-            duration: '30 minutes',
-            coordinates: {
-              lat: 33.4175,
-              lng: -111.9350
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.5,
-              note: 'Had a good breakfast with friends'
-            }
+          sentimentScore: 0.7
+        },
+        {
+          id: '2',
+          name: 'Coffee Shop',
+          type: 'food',
+          address: '456 Market St',
+          time: '8:30 AM',
+          duration: '30 minutes',
+          coordinates: {
+            lat: 37.7790,
+            lng: -122.4190
           },
-          {
-            id: '3',
-            name: 'Computer Science Building',
-            type: 'school',
-            address: 'ASU Brickyard, Tempe',
-            time: '9:00 AM',
-            duration: '2 hours',
-            coordinates: {
-              lat: 33.4225,
-              lng: -111.9400
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.9,
-              note: 'Aced my computer science exam!'
-            }
+          sentimentScore: 0.6
+        },
+        {
+          id: '3',
+          name: 'Office',
+          type: 'work',
+          address: '789 Mission St',
+          time: '9:15 AM',
+          duration: '4 hours',
+          coordinates: {
+            lat: 37.7850,
+            lng: -122.4000
           },
-          {
-            id: '4',
-            name: 'Library Study Session',
-            type: 'school',
-            address: 'Hayden Library, ASU Tempe',
-            time: '12:00 PM',
-            duration: '2 hours 30 minutes',
-            coordinates: {
-              lat: 33.4190,
-              lng: -111.9350
-            },
-            emotion: {
-              primary: 'neutral',
-              intensity: 0.6,
-              note: 'Working on group project, making good progress'
-            }
+          sentimentScore: 0.2
+        },
+        {
+          id: '4',
+          name: 'Lunch Spot',
+          type: 'food',
+          address: '101 Howard St',
+          time: '1:30 PM',
+          duration: '1 hour',
+          coordinates: {
+            lat: 37.7900,
+            lng: -122.3950
           },
-          {
-            id: '5',
-            name: 'Campus Recreation',
-            type: 'park',
-            address: 'Sun Devil Fitness Complex, Tempe',
-            time: '3:00 PM',
-            duration: '1 hour',
-            coordinates: {
-              lat: 33.4160,
-              lng: -111.9320
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.7,
-              note: 'Great workout, feeling energized'
-            }
+          sentimentScore: 0.8
+        },
+        {
+          id: '5',
+          name: 'Grocery Store',
+          type: 'shopping',
+          address: '202 Van Ness Ave',
+          time: '5:45 PM',
+          duration: '45 minutes',
+          coordinates: {
+            lat: 37.7700,
+            lng: -122.4200
           },
-          {
-            id: '6',
-            name: 'Coffee with Friends',
-            type: 'food',
-            address: 'Dutch Bros Coffee, Tempe',
-            time: '5:00 PM',
-            duration: '1 hour',
-            coordinates: {
-              lat: 33.4150,
-              lng: -111.9270
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.8,
-              note: 'Hanging out with friends, sharing good news about exam'
-            }
+          sentimentScore: 0.3
+        },
+        {
+          id: '6',
+          name: 'Home',
+          type: 'home',
+          address: '123 Main St',
+          time: '6:45 PM',
+          coordinates: {
+            lat: 37.7749,
+            lng: -122.4194
           },
-          {
-            id: '7',
-            name: 'Back at Dorm',
-            type: 'home',
-            address: 'ASU Tooker House, Tempe',
-            time: '7:00 PM',
-            coordinates: {
-              lat: 33.4145,
-              lng: -111.9280
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.6,
-              note: 'Relaxing after a great day'
-            }
-          }
-        ]);
-      } else if (friendId === 'sheetal') {
-        resolve([
-          {
-            id: '1',
-            name: 'Manhattan Apartment',
-            type: 'home',
-            address: '212 E 42nd St, Manhattan',
-            time: '6:30 AM',
-            duration: '45 minutes',
-            coordinates: {
-              lat: 40.7505,
-              lng: -73.9734
-            },
-            emotion: {
-              primary: 'neutral',
-              intensity: 0.3,
-              note: 'Starting another busy day'
-            }
-          },
-          {
-            id: '2',
-            name: 'Central Park Run',
-            type: 'park',
-            address: 'Central Park Reservoir Track',
-            time: '7:30 AM',
-            duration: '1 hour',
-            coordinates: {
-              lat: 40.7812,
-              lng: -73.9665
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.8,
-              note: 'Morning run always makes me feel great'
-            }
-          },
-          {
-            id: '3',
-            name: 'Coffee Shop',
-            type: 'food',
-            address: '401 Park Ave S, Manhattan',
-            time: '8:45 AM',
-            duration: '25 minutes',
-            coordinates: {
-              lat: 40.7425,
-              lng: -73.9845
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.6,
-              note: 'Good coffee to start the workday'
-            }
-          },
-          {
-            id: '4',
-            name: 'Office - Wall Street',
-            type: 'work',
-            address: '23 Wall St, Manhattan',
-            time: '9:30 AM',
-            duration: '4 hours',
-            coordinates: {
-              lat: 40.7068,
-              lng: -74.0106
-            },
-            emotion: {
-              primary: 'neutral',
-              intensity: 0.5,
-              note: 'Busy morning with meetings'
-            }
-          },
-          {
-            id: '5',
-            name: 'Lunch at Shake Shack',
-            type: 'food',
-            address: '215 Murray St, Manhattan',
-            time: '1:45 PM',
-            duration: '45 minutes',
-            coordinates: {
-              lat: 40.7149,
-              lng: -74.0133
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.7,
-              note: 'Great burger and took a nice break from work'
-            }
-          },
-          {
-            id: '6',
-            name: 'Back at Office',
-            type: 'work',
-            address: '23 Wall St, Manhattan',
-            time: '2:30 PM',
-            coordinates: {
-              lat: 40.7068,
-              lng: -74.0106
-            },
-            emotion: {
-              primary: 'neutral',
-              intensity: 0.5,
-              note: 'Afternoon meetings, looking forward to the weekend'
-            }
-          }
-        ]);
-      } else if (friendId === 'shahraan') {
-        resolve([
-          {
-            id: '1',
-            name: 'Home',
-            type: 'home',
-            address: 'Scarsdale, NY',
-            time: '7:00 AM',
-            duration: '1 hour',
-            coordinates: {
-              lat: 40.9884,
-              lng: -73.7776
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.6,
-              note: 'Excited for school today'
-            }
-          },
-          {
-            id: '2',
-            name: 'Scarsdale Elementary',
-            type: 'school',
-            address: 'Scarsdale, NY',
-            time: '8:30 AM',
-            duration: '3 hours 30 minutes',
-            coordinates: {
-              lat: 40.9900,
-              lng: -73.7800
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.8,
-              note: 'Got a gold star on my math homework!'
-            }
-          },
-          {
-            id: '3',
-            name: 'School Lunch',
-            type: 'food',
-            address: 'School Cafeteria',
-            time: '12:00 PM',
-            duration: '30 minutes',
-            coordinates: {
-              lat: 40.9900,
-              lng: -73.7800
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.7,
-              note: 'Pizza day is the best!'
-            }
-          },
-          {
-            id: '4',
-            name: 'Afternoon Classes',
-            type: 'school',
-            address: 'Scarsdale Elementary',
-            time: '12:30 PM',
-            duration: '3 hours',
-            coordinates: {
-              lat: 40.9900,
-              lng: -73.7800
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.9,
-              note: 'Art class was super fun today'
-            }
-          },
-          {
-            id: '5',
-            name: 'Baseball Practice',
-            type: 'park',
-            address: 'Scarsdale Little League Field',
-            time: '4:00 PM',
-            duration: '1 hour 30 minutes',
-            coordinates: {
-              lat: 40.9850,
-              lng: -73.7830
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.9,
-              note: 'Hit a home run at practice!'
-            }
-          },
-          {
-            id: '6',
-            name: 'Home for Dinner',
-            type: 'home',
-            address: 'Scarsdale, NY',
-            time: '6:00 PM',
-            coordinates: {
-              lat: 40.9884,
-              lng: -73.7776
-            },
-            emotion: {
-              primary: 'happy',
-              intensity: 0.8,
-              note: 'Mom made my favorite dinner'
-            }
-          }
-        ]);
-      } else if (friendId === 'lena') {
-        resolve([
-          {
-            id: '1',
-            name: 'Queens Apartment',
-            type: 'home',
-            address: 'Queens, NY',
-            time: '5:00 AM',
-            duration: '45 minutes',
-            coordinates: {
-              lat: 40.7282,
-              lng: -73.7949
-            },
-            emotion: {
-              primary: 'neutral',
-              intensity: 0.4,
-              note: 'Early morning, getting ready for hospital shift'
-            }
-          },
-          {
-            id: '2',
-            name: 'Subway Commute',
-            type: 'transit',
-            address: 'Queens Subway',
-            time: '6:00 AM',
-            duration: '45 minutes',
-            coordinates: {
-              lat: 40.7300,
-              lng: -73.8000
-            },
-            emotion: {
-              primary: 'neutral',
-              intensity: 0.3,
-              note: 'Quiet morning commute, preparing mentally for the day'
-            }
-          },
-          {
-            id: '3',
-            name: 'Queens Medical Center',
-            type: 'hospital',
-            address: 'Queens Hospital Center',
-            time: '7:00 AM',
-            duration: '6 hours',
-            coordinates: {
-              lat: 40.7420,
-              lng: -73.8200
-            },
-            emotion: {
-              primary: 'neutral',
-              intensity: 0.5,
-              note: 'Busy morning rounds, multiple patients to see'
-            }
-          },
-          {
-            id: '4',
-            name: 'Hospital Cafeteria',
-            type: 'food',
-            address: 'Queens Hospital Center',
-            time: '1:00 PM',
-            duration: '30 minutes',
-            coordinates: {
-              lat: 40.7420,
-              lng: -73.8200
-            },
-            emotion: {
-              primary: 'sad',
-              intensity: 0.6,
-              note: 'Had to deliver difficult news to a patient'
-            }
-          },
-          {
-            id: '5',
-            name: 'Emergency Department',
-            type: 'hospital',
-            address: 'Queens Hospital Center',
-            time: '1:30 PM',
-            duration: '5 hours 30 minutes',
-            coordinates: {
-              lat: 40.7420,
-              lng: -73.8200
-            },
-            emotion: {
-              primary: 'sad',
-              intensity: 0.7,
-              note: 'Very busy ER shift, challenging cases'
-            }
-          },
-          {
-            id: '6',
-            name: 'Subway Home',
-            type: 'transit',
-            address: 'Queens Subway',
-            time: '7:00 PM',
-            duration: '45 minutes',
-            coordinates: {
-              lat: 40.7300,
-              lng: -73.8000
-            },
-            emotion: {
-              primary: 'neutral',
-              intensity: 0.4,
-              note: 'Tired after long shift, looking forward to rest'
-            }
-          },
-          {
-            id: '7',
-            name: 'Home',
-            type: 'home',
-            address: 'Queens, NY',
-            time: '8:00 PM',
-            coordinates: {
-              lat: 40.7282,
-              lng: -73.7949
-            },
-            emotion: {
-              primary: 'neutral',
-              intensity: 0.6,
-              note: 'Need to rest, long day at the hospital'
-            }
-          }
-        ]);
-      } else {
-        // Default
-        resolve([]);
-      }
+          sentimentScore: 0.9
+        }
+      ]);
     }, 1500);
   });
 };
@@ -674,110 +258,62 @@ export const fetchActivityData = async (): Promise<ActivityData[]> => {
   });
 };
 
-// Mock function to fetch sentiment data - updated to be friend-specific
-export const fetchSentimentData = async (friendId = 'arnav'): Promise<any[]> => {
+// Mock function to fetch sentiment data
+export const fetchSentimentData = async (): Promise<any[]> => {
+  // In a real app, you would calculate this from NLP processing
   return new Promise((resolve) => {
     setTimeout(() => {
-      if (friendId === 'arnav') {
-        resolve([
-          {
-            period: 'Monday',
-            happy: 0.65,
-            sad: 0.1,
-            angry: 0.0,
-            neutral: 0.25,
-            overall: 0.55,
-            primaryEmotion: 'happy',
-            locationCorrelation: [
-              {
-                type: 'school',
-                name: 'Computer Science Building',
-                score: 0.85
-              },
-              {
-                type: 'park',
-                name: 'Campus Recreation',
-                score: 0.72
-              }
-            ]
-          }
-        ]);
-      } else if (friendId === 'sheetal') {
-        resolve([
-          {
-            period: 'Monday',
-            happy: 0.55,
-            sad: 0.1,
-            angry: 0.05,
-            neutral: 0.3,
-            overall: 0.45,
-            primaryEmotion: 'happy',
-            locationCorrelation: [
-              {
-                type: 'park',
-                name: 'Central Park',
-                score: 0.9
-              },
-              {
-                type: 'food',
-                name: 'Shake Shack',
-                score: 0.75
-              }
-            ]
-          }
-        ]);
-      } else if (friendId === 'shahraan') {
-        resolve([
-          {
-            period: 'Monday',
-            happy: 0.8,
-            sad: 0.05,
-            angry: 0.05,
-            neutral: 0.1,
-            overall: 0.75,
-            primaryEmotion: 'happy',
-            locationCorrelation: [
-              {
-                type: 'park',
-                name: 'Baseball Field',
-                score: 0.95
-              },
-              {
-                type: 'food',
-                name: 'School Cafeteria',
-                score: 0.8
-              }
-            ]
-          }
-        ]);
-      } else if (friendId === 'lena') {
-        resolve([
-          {
-            period: 'Monday',
-            happy: 0.2,
-            sad: 0.4,
-            angry: 0.1,
-            neutral: 0.3,
-            overall: -0.1,
-            primaryEmotion: 'sad',
-            locationCorrelation: [
-              {
-                type: 'home',
-                name: 'Queens Apartment',
-                score: 0.6
-              },
-              {
-                type: 'food',
-                name: 'Coffee Shop',
-                score: 0.5
-              }
-            ]
-          }
-        ]);
-      } else {
-        // Default
-        resolve([]);
-      }
+      resolve([
+        {
+          period: 'Monday',
+          positive: 0.65,
+          neutral: 0.25,
+          negative: 0.1,
+          overall: 0.55
+        },
+        {
+          period: 'Tuesday',
+          positive: 0.55,
+          neutral: 0.35,
+          negative: 0.1,
+          overall: 0.45
+        },
+        {
+          period: 'Wednesday',
+          positive: 0.45,
+          neutral: 0.3,
+          negative: 0.25,
+          overall: 0.2
+        },
+        {
+          period: 'Thursday',
+          positive: 0.6,
+          neutral: 0.3,
+          negative: 0.1,
+          overall: 0.5
+        },
+        {
+          period: 'Friday',
+          positive: 0.7,
+          neutral: 0.2,
+          negative: 0.1,
+          overall: 0.6
+        },
+        {
+          period: 'Saturday',
+          positive: 0.8,
+          neutral: 0.15,
+          negative: 0.05,
+          overall: 0.75
+        },
+        {
+          period: 'Sunday',
+          positive: 0.75,
+          neutral: 0.2,
+          negative: 0.05,
+          overall: 0.7
+        }
+      ]);
     }, 1500);
   });
 };
