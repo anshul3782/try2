@@ -6,7 +6,7 @@ import Timeline, { TimelineItem } from '@/components/UI/Timeline';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { MapPin, Building, Home, ShoppingBag, Coffee, Car, Calendar, 
-         Smile, Frown, Angry, BookOpen, Stethoscope, HeartPulse, Park } from "lucide-react";
+         Smile, Frown, Angry, BookOpen, Stethoscope, HeartPulse, TreePine } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { toast } from "sonner";
 
@@ -81,7 +81,7 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
       case 'shopping': return <ShoppingBag className="h-5 w-5" />;
       case 'food': return <Coffee className="h-5 w-5" />;
       case 'transit': return <Car className="h-5 w-5" />;
-      case 'park': return <Park className="h-5 w-5" />;
+      case 'park': return <TreePine className="h-5 w-5" />; // Changed from Park to TreePine
       case 'school': return <BookOpen className="h-5 w-5" />;
       case 'hospital': return <Stethoscope className="h-5 w-5" />;
       default: return <MapPin className="h-5 w-5" />;

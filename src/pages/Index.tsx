@@ -36,6 +36,18 @@ const Dashboard = () => {
     });
   };
 
+  const getEmotionEmoji = (emotion: string) => {
+    switch(emotion) {
+      case 'happy': return '😊';
+      case 'sad': return '😢';
+      case 'angry': return '😠';
+      case 'surprised': return '😮';
+      case 'scared': return '😨';
+      case 'neutral': return '😐';
+      default: return '😐';
+    }
+  };
+
   return (
     <>
       <DashboardHeader
@@ -45,9 +57,16 @@ const Dashboard = () => {
       />
 
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-2">
-          <Users className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-medium">{currentFriend?.name}'s Journey</h2>
+        <div className="flex items-center gap-3">
+          <div className="text-3xl">
+            {currentFriend && getEmotionEmoji(currentFriend.currentEmotion)}
+          </div>
+          <div>
+            <h2 className="text-xl font-medium">{currentFriend?.name}'s Journey</h2>
+            <p className="text-sm text-muted-foreground">
+              Currently in {currentFriend?.location} • {currentFriend?.description}
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
           <Button

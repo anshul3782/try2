@@ -93,6 +93,12 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const friend = friends.find(f => f.id === activePeriod) || friends[0];
       setCurrentFriend(friend);
       
+      // Clear previous data
+      setLocations([]);
+      setSentimentData([]);
+      setIsLocationLoading(true);
+      setIsSentimentLoading(true);
+      
       // Load location data specific to the selected friend
       fetchLocationData(activePeriod).then(data => {
         setLocations(data);
