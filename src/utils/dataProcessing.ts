@@ -1,3 +1,4 @@
+
 import { LocationData, ActivityData, SocialPost } from '@/types/dashboard';
 import { analyzeSentiment, generateSentimentSummary, generateSentimentNarrative } from './sentimentAnalysis';
 
@@ -257,7 +258,7 @@ const processSentimentData = (posts: SocialPost[], locations: LocationData[]) =>
   
   const overallScore = allScores.length
     ? allScores.reduce((sum, score) => sum + score, 0) / allScores.length
-    : 0;
+    : 0.5; // Default to neutral if no scores
   
   // Generate sentiment summary
   const sentimentResults = posts
@@ -269,14 +270,10 @@ const processSentimentData = (posts: SocialPost[], locations: LocationData[]) =>
     : 'No sentiment data available.';
   
   return {
-    overallScore: 0.5, // Default placeholder value
+    overallScore,
     byPlatform: sentimentByPlatform,
-    byLocation: {} as Record<string, number>,
-    byTimeOfDay: {
-      morning: 0.6,
-      afternoon: 0.2,
-      evening: 0.7
-    },
+    byLocation: sentimentByLocation,
+    byTimeOfDay: sentimentByTimeOfDay,
     summary
   };
 };
