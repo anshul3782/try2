@@ -5,13 +5,14 @@ import Map from '@/components/UI/Map';
 import Timeline, { TimelineItem } from '@/components/UI/Timeline';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { MapPin, Building, Home, ShoppingBag, Coffee, Car, Calendar } from "lucide-react";
+import { MapPin, Building, Home, ShoppingBag, Coffee, Car, Calendar, Smile, Frown, Meh, Heart, Activity } from "lucide-react";
 import { cn } from '@/lib/utils';
+import { toast } from "sonner";
 
 export interface LocationData {
   id: string;
   name: string;
-  type: 'home' | 'work' | 'shopping' | 'food' | 'transit' | 'other';
+  type: 'home' | 'work' | 'shopping' | 'food' | 'transit' | 'park' | 'other';
   address?: string;
   time: string;
   duration?: string;
@@ -51,9 +52,26 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
     time: location.time,
     title: location.name,
     description: getLocationDescription(location),
-    icon: getLocationTypeIcon(location.type),
+    icon: getLocationIcon(location),
     color: getLocationColor(location)
   }));
+  
+  function getLocationIcon(location: LocationData) {
+    // First prioritize emotion if available
+    if (location.emotion) {
+      switch (location.emotion.primary) {
+        case 'joy': return <Smile className="h-3.5 w-3.5" />;
+        case 'sadness': return <Frown className="h-3.5 w-3.5" />;
+        case 'anger': return <Frown className="h-3.5 w-3.5" />;
+        case 'surprise': return <Meh className="h-3.5 w-3.5" />;
+        case 'fear': return <Meh className="h-3.5 w-3.5" />;
+        case 'neutral': return <Meh className="h-3.5 w-3.5" />;
+      }
+    }
+    
+    // Fallback to location type
+    return getLocationTypeIcon(location.type);
+  }
   
   function getLocationTypeIcon(type: LocationData['type']) {
     switch (type) {
@@ -62,6 +80,7 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
       case 'shopping': return <ShoppingBag className="h-3.5 w-3.5" />;
       case 'food': return <Coffee className="h-3.5 w-3.5" />;
       case 'transit': return <Car className="h-3.5 w-3.5" />;
+      case 'park': return <Activity className="h-3.5 w-3.5" />;
       default: return <MapPin className="h-3.5 w-3.5" />;
     }
   }
@@ -85,6 +104,7 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
       case 'work': return 'hsl(var(--primary))';
       case 'shopping': return 'hsl(var(--sentiment-neutral))';
       case 'food': return 'hsl(330, 80%, 60%)';
+      case 'park': return 'hsl(145, 80%, 50%)';
       case 'transit': return 'hsl(210, 70%, 60%)';
       default: return 'hsl(var(--muted-foreground))';
     }
@@ -133,6 +153,12 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
     return description;
   }
   
+  const handleRecordEmotion = () => {
+    toast.success("Emotion recorded for your current location", {
+      description: "Your emotional state has been saved."
+    });
+  };
+  
   return (
     <DataCard 
       title="Location & Emotion Timeline" 
@@ -155,7 +181,7 @@ const LocationTimeline = ({ locations = [], isLoading = false, className }: Loca
             </TabsTrigger>
           </TabsList>
           
-          <Button variant="outline" size="sm">Record emotion</Button>
+          <Button variant="outline" size="sm" onClick={handleRecordEmotion}>Record emotion</Button>
         </div>
         
         <TabsContent value="map" className="mt-0">

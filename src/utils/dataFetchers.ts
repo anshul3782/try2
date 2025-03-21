@@ -1,4 +1,3 @@
-
 import { SocialPost } from '@/components/Dashboard/SocialFeed';
 import { LocationData } from '@/components/Dashboard/LocationTimeline';
 import { ActivityData } from '@/components/Dashboard/ActivityMetrics';
@@ -120,78 +119,187 @@ export const fetchLocationData = async (): Promise<LocationData[]> => {
           id: '1',
           name: 'Home',
           type: 'home',
-          address: '123 Main St',
-          time: '7:00 AM',
-          duration: '1 hour',
+          address: '212 E 42nd St, Manhattan',
+          time: '6:30 AM',
+          duration: '45 minutes',
           coordinates: {
-            lat: 37.7749,
-            lng: -122.4194
+            lat: 40.7505,
+            lng: -73.9734
           },
-          sentimentScore: 0.7
+          emotion: {
+            primary: 'neutral',
+            intensity: 0.3,
+            note: 'Just woke up, feeling a bit groggy but ready for the day'
+          }
         },
         {
           id: '2',
-          name: 'Coffee Shop',
-          type: 'food',
-          address: '456 Market St',
-          time: '8:30 AM',
-          duration: '30 minutes',
+          name: 'Central Park Run',
+          type: 'park',
+          address: 'Central Park Reservoir Track',
+          time: '7:30 AM',
+          duration: '1 hour',
           coordinates: {
-            lat: 37.7790,
-            lng: -122.4190
+            lat: 40.7812,
+            lng: -73.9665
           },
-          sentimentScore: 0.6
+          emotion: {
+            primary: 'joy',
+            intensity: 0.8,
+            note: 'Amazing morning run! The park is beautiful today and I feel energized'
+          }
         },
         {
           id: '3',
-          name: 'Office',
-          type: 'work',
-          address: '789 Mission St',
-          time: '9:15 AM',
-          duration: '4 hours',
+          name: 'Coffee Shop',
+          type: 'food',
+          address: '401 Park Ave S, Manhattan',
+          time: '8:45 AM',
+          duration: '25 minutes',
           coordinates: {
-            lat: 37.7850,
-            lng: -122.4000
+            lat: 40.7425,
+            lng: -73.9845
           },
-          sentimentScore: 0.2
+          emotion: {
+            primary: 'joy',
+            intensity: 0.6,
+            note: 'Great coffee and got some work done on my laptop'
+          }
         },
         {
           id: '4',
-          name: 'Lunch Spot',
-          type: 'food',
-          address: '101 Howard St',
-          time: '1:30 PM',
-          duration: '1 hour',
+          name: 'Office - Wall Street',
+          type: 'work',
+          address: '23 Wall St, Manhattan',
+          time: '9:30 AM',
+          duration: '4 hours',
           coordinates: {
-            lat: 37.7900,
-            lng: -122.3950
+            lat: 40.7068,
+            lng: -74.0106
           },
-          sentimentScore: 0.8
+          emotion: {
+            primary: 'neutral',
+            intensity: 0.4,
+            note: 'Busy morning with meetings, feeling productive but a bit stressed'
+          }
         },
         {
           id: '5',
-          name: 'Grocery Store',
-          type: 'shopping',
-          address: '202 Van Ness Ave',
-          time: '5:45 PM',
+          name: 'Lunch at Shake Shack',
+          type: 'food',
+          address: '215 Murray St, Manhattan',
+          time: '1:45 PM',
           duration: '45 minutes',
           coordinates: {
-            lat: 37.7700,
-            lng: -122.4200
+            lat: 40.7149,
+            lng: -74.0133
           },
-          sentimentScore: 0.3
+          emotion: {
+            primary: 'joy',
+            intensity: 0.7,
+            note: 'Great burger and took a nice break from work'
+          }
         },
         {
           id: '6',
-          name: 'Home',
-          type: 'home',
-          address: '123 Main St',
-          time: '6:45 PM',
+          name: 'Back at Office',
+          type: 'work',
+          address: '23 Wall St, Manhattan',
+          time: '2:30 PM',
+          duration: '3 hours 15 minutes',
           coordinates: {
-            lat: 37.7749,
-            lng: -122.4194
+            lat: 40.7068,
+            lng: -74.0106
           },
-          sentimentScore: 0.9
+          emotion: {
+            primary: 'surprise',
+            intensity: 0.5,
+            note: 'Unexpected good news about the project, but still have a lot of work to do'
+          }
+        },
+        {
+          id: '7',
+          name: 'Happy Hour',
+          type: 'food',
+          address: '75 Wall St, Manhattan',
+          time: '5:45 PM',
+          duration: '1 hour 30 minutes',
+          coordinates: {
+            lat: 40.7043,
+            lng: -74.0072
+          },
+          emotion: {
+            primary: 'joy',
+            intensity: 0.9,
+            note: 'Great conversations with coworkers, feeling relaxed and happy'
+          }
+        },
+        {
+          id: '8',
+          name: 'Subway Commute',
+          type: 'transit',
+          address: 'Wall St Station',
+          time: '7:30 PM',
+          duration: '35 minutes',
+          coordinates: {
+            lat: 40.7064,
+            lng: -74.0090
+          },
+          emotion: {
+            primary: 'sadness',
+            intensity: 0.4,
+            note: 'Tired and the subway is crowded'
+          }
+        },
+        {
+          id: '9',
+          name: 'Dinner at Home',
+          type: 'home',
+          address: '212 E 42nd St, Manhattan',
+          time: '8:15 PM',
+          duration: '45 minutes',
+          coordinates: {
+            lat: 40.7505,
+            lng: -73.9734
+          },
+          emotion: {
+            primary: 'joy',
+            intensity: 0.7,
+            note: 'Relaxing with dinner and enjoying some quiet time'
+          }
+        },
+        {
+          id: '10',
+          name: 'Evening Walk in Bryant Park',
+          type: 'park',
+          address: 'Bryant Park, Manhattan',
+          time: '9:15 PM',
+          duration: '40 minutes',
+          coordinates: {
+            lat: 40.7536,
+            lng: -73.9832
+          },
+          emotion: {
+            primary: 'neutral',
+            intensity: 0.6,
+            note: 'Nice evening air, feeling contemplative about the day'
+          }
+        },
+        {
+          id: '11',
+          name: 'Home for the Night',
+          type: 'home',
+          address: '212 E 42nd St, Manhattan',
+          time: '10:00 PM',
+          coordinates: {
+            lat: 40.7505,
+            lng: -73.9734
+          },
+          emotion: {
+            primary: 'neutral',
+            intensity: 0.5,
+            note: 'Tired but satisfied with the day'
+          }
         }
       ]);
     }, 1500);

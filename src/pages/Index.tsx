@@ -6,7 +6,8 @@ import DashboardHeader from '@/components/Dashboard/DashboardHeader';
 import SentimentAnalysis from '@/components/Dashboard/SentimentAnalysis';
 import LocationTimeline from '@/components/Dashboard/LocationTimeline';
 import { Button } from "@/components/ui/button";
-import { MapPin, RefreshCw, PlusCircle } from "lucide-react";
+import { MapPin, RefreshCw, PlusCircle, Heart } from "lucide-react";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   const {
@@ -21,10 +22,17 @@ const Dashboard = () => {
 
   const handleRefresh = async () => {
     await refreshData();
+    toast.success("Data refreshed successfully");
   };
 
   const handleTimeRangeChange = (range: string) => {
     setActivePeriod(range);
+  };
+
+  const handleAddLocation = () => {
+    toast.success("Location added", {
+      description: "Your current location has been recorded"
+    });
   };
 
   return (
@@ -37,7 +45,7 @@ const Dashboard = () => {
 
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-2">
-          <MapPin className="h-5 w-5 text-primary" />
+          <Heart className="h-5 w-5 text-rose-500" />
           <h2 className="text-xl font-medium">Your Emotional Journey</h2>
         </div>
         <div className="flex gap-2">
@@ -45,6 +53,7 @@ const Dashboard = () => {
             variant="outline"
             size="sm"
             className="flex items-center gap-2"
+            onClick={handleAddLocation}
           >
             <PlusCircle className="h-4 w-4" />
             <span>Add Location</span>
