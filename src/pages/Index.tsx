@@ -10,6 +10,14 @@ import { Button } from "@/components/ui/button";
 import { RefreshCw, UserPlus, Heart, Edit } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious
+} from "@/components/ui/carousel";
 
 const Dashboard = () => {
   const {
@@ -66,51 +74,63 @@ const Dashboard = () => {
             <p className="text-muted-foreground">See how your friends are feeling today</p>
           </div>
           
-          <div className="grid gap-3">
-            {friends.map(friend => (
-              <div 
-                key={friend.id}
-                onClick={() => handleFriendChange(friend.id)}
-                className={`flex items-center gap-3 p-3 rounded-lg border transition-all cursor-pointer hover:bg-accent/50 ${
-                  activePeriod === friend.id ? 'bg-accent border-primary/30' : 'bg-background'
-                }`}
-              >
-                <div className="relative">
-                  <Avatar className="h-10 w-10 border">
-                    <AvatarFallback>{getInitials(friend.name)}</AvatarFallback>
-                  </Avatar>
-                  <div className="absolute -bottom-1 -right-1 text-lg">
-                    {getEmotionEmoji(friend.currentEmotion)}
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium leading-none mb-1">{friend.name}</div>
-                  <div className="text-xs text-muted-foreground truncate">{friend.location}</div>
-                </div>
-                {activePeriod === friend.id && (
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="ml-auto"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsEmotionModalOpen(true);
-                    }}
+          <div className="w-full pb-6">
+            <Carousel className="w-full">
+              <CarouselContent>
+                {friends.map(friend => (
+                  <CarouselItem key={friend.id} className="md:basis-1/2 lg:basis-1/3">
+                    <div 
+                      onClick={() => handleFriendChange(friend.id)}
+                      className={`flex flex-col items-center gap-3 p-4 rounded-lg border transition-all cursor-pointer h-full
+                        hover:bg-accent/50 ${
+                        activePeriod === friend.id ? 'bg-accent border-primary/30' : 'bg-background'
+                      }`}
+                    >
+                      <div className="relative">
+                        <Avatar className="h-16 w-16 border">
+                          <AvatarFallback>{getInitials(friend.name)}</AvatarFallback>
+                        </Avatar>
+                        <div className="absolute -bottom-1 -right-1 text-2xl">
+                          {getEmotionEmoji(friend.currentEmotion)}
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-center text-center">
+                        <div className="font-medium text-lg leading-none mb-2">{friend.name}</div>
+                        <div className="text-sm text-muted-foreground">{friend.location}</div>
+                        <div className="text-xs text-muted-foreground mt-2 line-clamp-2">{friend.description}</div>
+                      </div>
+                      {activePeriod === friend.id && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-auto"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsEmotionModalOpen(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4 mr-2" />
+                          Update emotion
+                        </Button>
+                      )}
+                    </div>
+                  </CarouselItem>
+                ))}
+                
+                <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+                  <div 
+                    className="flex flex-col items-center justify-center gap-3 p-4 rounded-lg border transition-all 
+                      cursor-pointer h-full border-dashed hover:bg-accent/30"
+                    onClick={handleAddFriend}
                   >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            ))}
-            
-            <Button 
-              variant="outline" 
-              className="flex items-center gap-2 mt-2" 
-              onClick={handleAddFriend}
-            >
-              <UserPlus className="h-4 w-4" />
-              <span>Add new friend</span>
-            </Button>
+                    <UserPlus className="h-10 w-10 text-muted-foreground" />
+                    <div className="font-medium text-muted-foreground">Add new friend</div>
+                  </div>
+                </CarouselItem>
+              </CarouselContent>
+              <CarouselPrevious className="left-0" />
+              <CarouselNext className="right-0" />
+            </Carousel>
           </div>
         </div>
         

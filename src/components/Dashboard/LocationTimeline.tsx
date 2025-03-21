@@ -84,7 +84,7 @@ const LocationTimeline = ({ locations = [], isLoading = false, className, onUpda
       case 'shopping': return <ShoppingBag className="h-5 w-5" />;
       case 'food': return <Coffee className="h-5 w-5" />;
       case 'transit': return <Car className="h-5 w-5" />;
-      case 'park': return <TreePine className="h-5 w-5" />; // Changed from Park to TreePine
+      case 'park': return <TreePine className="h-5 w-5" />; 
       case 'school': return <BookOpen className="h-5 w-5" />;
       case 'hospital': return <Stethoscope className="h-5 w-5" />;
       default: return <MapPin className="h-5 w-5" />;
