@@ -36,7 +36,7 @@ const App: React.FC = () => {
 
         const { latitude, longitude } = position.coords;
 
-        const response = await fetch('http://35.171.153.248/insert_tracker', {
+        const response = await fetch('https://apigeosentiment.vercel.app/insert_tracker', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
