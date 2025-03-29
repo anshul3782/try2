@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    allowedHosts: ['try2-ch58.onrender.com'], // ✅ Add this line
+    allowedHosts: ['try2-lin5.onrender.com'], // ✅ Add this line
   },
   plugins: [
     react(),
