@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState,useEffect } from "react";
 import { DashboardProvider, useDashboard } from '@/context/DashboardContext';
 import DashboardLayout from '@/components/Dashboard/DashboardLayout';
 import DashboardHeader from '@/components/Dashboard/DashboardHeader';
@@ -47,6 +47,35 @@ const Dashboard = () => {
       default: return '😐';
     }
   };
+
+  // // function LocationComponent() {
+  //   const [location, setLocation] = useState(null);
+  //   const [error, setError] = useState(null);
+  
+  //   useEffect(() => {
+  //     const getLocation = () => {
+  //       if ("geolocation" in navigator) {
+  //         navigator.geolocation.getCurrentPosition(
+  //           (position) => {
+  //             const newLocation = {
+  //               latitude: position.coords.latitude,
+  //               longitude: position.coords.longitude,
+  //             };
+  //             setLocation(newLocation);
+  //             console.log("User's Location:", newLocation); // Log location
+  //           },
+  //           (error) => {
+  //             setError(error.message);
+  //             console.error("Error getting location:", error.message);
+  //           }
+  //         );
+  //       } else {
+  //         setError("Geolocation is not supported by your browser.");
+  //       }
+  //     };
+  
+  //     getLocation(); // Call function inside useEffect on component mount
+  //   }, []);
 
   return (
     <>

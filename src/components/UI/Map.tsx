@@ -1,78 +1,128 @@
 
-import React from 'react';
-import { cn } from '@/lib/utils';
 
-interface MapLocation {
-  id: string;
-  lat: number;
-  lng: number;
-  title: string;
-  description?: string;
-  color?: string;
-  size?: number;
+import React, { useState, useEffect, useRef } from "react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import axios from "axios";
+
+interface Location {
+  latitude: number;
+  longitude: number;
 }
 
-interface MapProps {
-  locations?: MapLocation[];
-  className?: string;
-  height?: number | string;
-  isLoading?: boolean;
-}
+const Map: React.FC = () => {
+  const mapRef = useRef<L.Map | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const [location, setLocation] = useState<Location | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-const Map = ({
-  locations = [],
-  className,
-  height = 300,
-  isLoading = false
-}: MapProps) => {
-  const mapRef = React.useRef<HTMLDivElement>(null);
-  
-  // Mock map placeholder - would use a real map library in production
-  return (
-    <div 
-      ref={mapRef}
-      className={cn(
-        "relative rounded-md overflow-hidden border border-border bg-secondary/50", 
-        isLoading ? "animate-pulse" : "",
-        className
-      )}
-      style={{ height }}
-    >
-      <div className="absolute inset-0 bg-gradient-to-br from-background/20 to-background/5 backdrop-blur-xs"></div>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <p className="text-sm text-muted-foreground">
-          {isLoading 
-            ? "Loading map data..." 
-            : locations.length 
-              ? `Map with ${locations.length} locations` 
-              : "Map view (connect location data to display)"}
-        </p>
-      </div>
-      
-      {/* Location markers would be rendered here with a real map implementation */}
-      {locations.map(location => (
-        <div 
-          key={location.id}
-          className="absolute w-3 h-3 rounded-full bg-primary transform -translate-x-1/2 -translate-y-1/2"
-          style={{
-            left: `${30 + (location.lng + 180) / 360 * 40}%`,
-            top: `${20 + (location.lat + 90) / 180 * 60}%`,
-            backgroundColor: location.color || 'hsl(var(--primary))',
-            width: location.size ? `${location.size}px` : undefined,
-            height: location.size ? `${location.size}px` : undefined,
-          }}
-        >
-          <div className="absolute inset-0 animate-ping rounded-full bg-current opacity-75" 
-               style={{ backgroundColor: location.color || 'hsl(var(--primary))' }}></div>
+  useEffect(() => {
+    const getLocation = () => {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const newLocation = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            };
+            setLocation(newLocation);
+            console.log("User's Location:", newLocation);
+          },
+          (error) => {
+            setError(error.message);
+            console.error("Error getting location:", error.message);
+          }
+        );
+      } else {
+        setError("Geolocation is not supported by your browser.");
+      }
+    };
+
+    getLocation();
+  }, []);
+
+  useEffect(() => {
+    if (!location || !mapContainerRef.current) return;
+
+    // Initialize Leaflet map
+    const map = L.map(mapContainerRef.current).setView(
+      [location.latitude, location.longitude],
+      14
+    );
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+    }).addTo(map);
+
+    L.marker([location.latitude, location.longitude])
+      .addTo(map)
+      .bindPopup("You are here!")
+      .openPopup();
+
+    mapRef.current = map;
+const fetchNearbySentiments = async () => {
+  try {
+    const response = await axios.get("http://localhost:3000/sentiments/near", {
+      params: {
+        lat: location.latitude,
+        lng: location.longitude,
+      },
+    });
+    console.log("Nearby Sentiments:", response.data);
+
+    const bounds = L.latLngBounds([location.latitude, location.longitude]); 
+
+    response.data.forEach((sentiment) => {
+      const lat = parseFloat(sentiment.latitude);
+      const lng = parseFloat(sentiment.longitude);
+
+      if (!lat || !lng) {
+        console.error("Invalid coordinates:", sentiment);
+        return;
+      }
+
+      const popupContent = `
+        <div style="
+          font-size: 12px;
+          width: 300px;
+          padding: 6px;
+          line-height: 1.4;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          white-space: normal;
+        ">
+          <strong>Sentiment:</strong> ${sentiment.sentiment_value} <br/>
+          <strong>Confidence:</strong> ${sentiment.confidence} <br/>
+          <strong>Description:</strong> ${sentiment.location_description} <br/>
+          <strong>Reason:</strong> ${sentiment.reason}
         </div>
-      ))}
-      
-      {/* Map grid lines for visual effect */}
-      <div className="absolute inset-0 grid grid-cols-4 grid-rows-3">
-        {Array(12).fill(0).map((_, i) => (
-          <div key={i} className="border border-white/5"></div>
-        ))}
-      </div>
+      `;
+
+      const sentimentMarker = L.marker([lat, lng]).addTo(map);
+      sentimentMarker.bindTooltip(popupContent, { permanent: false, direction: "top" });
+
+      bounds.extend([lat, lng]); 
+    });
+
+    if (response.data.length > 0) {
+      bounds.extend([location.latitude, location.longitude]);
+      map.fitBounds(bounds, { padding: [50, 50] });
+    }
+  } catch (error) {
+    console.error("Error fetching nearby sentiments:", error);
+  }
+};
+
+
+    fetchNearbySentiments();
+
+    return () => map.remove();
+  }, [location]);
+
+  return (
+    <div>
+      {error && <p className="text-red-500">Error: {error}</p>}
+      <div ref={mapContainerRef} style={{ width: "100%", height: "400px" }} />
     </div>
   );
 };
