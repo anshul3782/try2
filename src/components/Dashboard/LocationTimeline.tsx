@@ -14,7 +14,7 @@ export interface TrackerData {
   event_time: string;
   latitude: number;
   longitude: number;
-  sentiment: 'happy' | 'sad' | 'angry' | 'neutral' | 'surprised' | 'scared';
+  sentiment: 'happy' | 'sad' | 'angry' | 'neutral' | 'surprised' | 'scared' | 'joyful';
   tracker_id: number;
 }
 
@@ -37,7 +37,8 @@ const LocationTimeline: React.FC<LocationTimelineProps> = ({ className }) => {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`http://35.171.153.248/get_trackers?email_id=${storedEmail}`);
+      const response = await fetch(`https://apigeosentiment.vercel.app/get_trackers?email_id=${storedEmail}`);
+
       
       if (!response.ok) {
         throw new Error('Failed to fetch trackers');
@@ -92,7 +93,8 @@ const LocationTimeline: React.FC<LocationTimelineProps> = ({ className }) => {
 
   function getSentimentColor(sentiment: TrackerData['sentiment']) {
     switch (sentiment) {
-      case 'happy': return 'hsl(var(--sentiment-positive))';
+      case 'happy':
+      case 'joyful': return 'hsl(var(--sentiment-positive))'; // Treat "joyful" same as "happy"
       case 'sad': return 'hsl(200, 70%, 60%)';
       case 'angry': return 'hsl(var(--sentiment-negative))';
       case 'neutral': return 'hsl(var(--sentiment-neutral))';
@@ -101,6 +103,7 @@ const LocationTimeline: React.FC<LocationTimelineProps> = ({ className }) => {
       default: return 'hsl(var(--muted-foreground))';
     }
   }
+  
   
   const handleRecordEmotion = () => {
     toast.success("Emotion recorded", {
